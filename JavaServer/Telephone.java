@@ -33,12 +33,12 @@ public class Telephone implements ManagedObject
 	public boolean canDelete() {return true;}
 	public void delete() {
 		__reset("application");
-		Set<Historique> objs_Historique = ((Set<Historique>)__get("historique"));
-		if ( objs_Historique != null) {
-			Iterator<Historique> iterHistorique = objs_Historique.iterator();
-			while (iterHistorique.hasNext()) {
-				Historique obj = iterHistorique.next();
-				iterHistorique.remove();
+		Set<Historique> objs_Historiques = ((Set<Historique>)__get("historiques"));
+		if ( objs_Historiques != null) {
+			Iterator<Historique> iterHistoriques = objs_Historiques.iterator();
+			while (iterHistoriques.hasNext()) {
+				Historique obj = iterHistoriques.next();
+				iterHistoriques.remove();
 				obj.delete();
 			}
 		}
@@ -46,12 +46,12 @@ public class Telephone implements ManagedObject
 	}
 	public void reset() {
 		__reset("application");
-		Set<Historique> objs_Historique = ((Set<Historique>)__get("historique"));
-		if ( objs_Historique != null) {
-			Iterator<Historique> iterHistorique = objs_Historique.iterator();
-			while (iterHistorique.hasNext()) {
-				Historique obj = iterHistorique.next();
-				iterHistorique.remove();
+		Set<Historique> objs_Historiques = ((Set<Historique>)__get("historiques"));
+		if ( objs_Historiques != null) {
+			Iterator<Historique> iterHistoriques = objs_Historiques.iterator();
+			while (iterHistoriques.hasNext()) {
+				Historique obj = iterHistoriques.next();
+				iterHistoriques.remove();
 				obj.delete();
 			}
 		}
@@ -142,8 +142,8 @@ public class Telephone implements ManagedObject
 		__reset("application");
 	}
 
-	public Collection<Historique> getHistorique() {
-		Set<Historique> vals = (Set<Historique>)_om.getTransaction().getValues(getId(),"historique",(Set<Historique>)__getShared("historique"));
+	public Collection<Historique> getHistoriques() {
+		Set<Historique> vals = (Set<Historique>)_om.getTransaction().getValues(getId(),"historiques",(Set<Historique>)__getShared("historiques"));
 			if (vals != null) {
 				ArrayList<Historique> list = new ArrayList<Historique>(vals);
 				Collections.sort(list, new Comparator<Historique>() {
@@ -160,14 +160,14 @@ public class Telephone implements ManagedObject
 			}
 		return vals;
 	}
-	public void addToHistorique(ManagedObject obj) throws Exception {
-		__addTo("historique", obj);
+	public void addToHistoriques(ManagedObject obj) throws Exception {
+		__addTo("historiques", obj);
 	}
-	public void removeFromHistorique(ManagedObject obj) {
-		__removeFrom("historique", obj);
+	public void removeFromHistoriques(ManagedObject obj) {
+		__removeFrom("historiques", obj);
 	}
-	public void resetHistorique() {
-		__reset("historique");
+	public void resetHistoriques() {
+		__reset("historiques");
 	}
 
 /*BEGIN_USERBODY*/

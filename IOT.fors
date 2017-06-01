@@ -4,9 +4,9 @@ $GEN_JavaGenerator : HttpObjectExchanger-rwc,PersistenceManager-rw,StaticDataExc
 
 Application
 	deleteTelephone(ManagedObject telephone):void
-	getOrCreateTelephone(string uid, string nom, string orientation):Telephone
+	getOrCreateTelephone(string nom):Telephone
 Application.currentTelephone --> Telephone
-Application.telephones<nom <!--@>> Telephone.application
+Application.telephones#nom<nom <!--@>> Telephone.application
 
 Historique
 	orientation : !float
@@ -20,14 +20,14 @@ Telephone.historiques<timestamp --@>> Historique
 
 //This module must be used to place elements that are not shared with other processus
 $MOD,clientLocal : ,PureJSGenerator,,,,,rw,
-$CLMOD,clientLocal,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw
+$CLMOD,clientLocal,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw,getOrCreateTelephone-rw
 $CLMOD,clientLocal,Historique,rw:orientation-rw,timestamp-rw
 $CLMOD,clientLocal,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
 $MOD,clientLocalTel : ,PureJSGenerator,,,,,rw,
 $CLMOD,clientLocalTel,Application,rw:getOrCreateTelephone-rw
 $CLMOD,clientLocalTel,Telephone,rw:nom-rw,orientation-rw,vibre-rw
 $MOD,httpToJavaServer : HttpObjectExchanger,PureJSGenerator,JavaServer,,,,rwc,
-$CLMOD,httpToJavaServer,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw
+$CLMOD,httpToJavaServer,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw,getOrCreateTelephone-rw
 $CLMOD,httpToJavaServer,Historique,rw:orientation-rw,timestamp-rw
 $CLMOD,httpToJavaServer,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
 $MOD,httpToJavaServerTel : ,PureJSGenerator,,,,,rw,

@@ -21,6 +21,9 @@ public class Application implements ManagedObject
 			deleteTelephone(argsMap, request);
 			return null;
 		}
+		if ("getOrCreateTelephone".equals(methodName)) {
+			return	getOrCreateTelephone(argsMap, request);
+		}
 		throw new NoSuchMethodException(methodName);
 	}
 
@@ -142,6 +145,18 @@ public class Application implements ManagedObject
 	}
 	public void rebuildIndexes(Collection<String> indexesNames) {
 		Map<Object,ManagedObject> indexMap=null;
+		if (isInIndexesList("telephonesBynom",indexesNames)) {
+			indexMap = $indexes.get("telephonesBynom");
+			if (indexMap==null) {
+				indexMap = new LinkedHashMap<Object,ManagedObject>();
+				$indexes.put("telephonesBynom",indexMap);
+			} else {
+				indexMap.clear();
+			}
+			for(Telephone obj : (Set<Telephone>)__getShared("telephones")) {
+				indexMap.put(obj.__getShared("nom"),obj);
+			}
+		}
 	}
 
 	public Collection<Telephone> getTelephones() {
@@ -174,10 +189,31 @@ public class Application implements ManagedObject
 	public void resetTelephones() {
 		__reset("telephones");
 	}
+	public boolean telephonesByNomContainsKey(Object index) {
+		return _om.getTransaction().indexedRelationContainsKey(getId(), "telephonesBynom", index, getIndexMap("telephonesBynom"));
+	}
+	public Set<Object> getTelephonesByNomKeys() {
+		return _om.getTransaction().getIndexedRelationKeys(getId(), "telephonesBynom", getIndexMap("telephonesBynom"));
+	}
+	public Telephone getTelephonesByNom(Object index) {
+		return (Telephone)_om.getTransaction().getIndexedRelationValue(getId(), "telephonesBynom", index, getIndexMap("telephonesBynom"));
+	}
 
 //	private void deleteTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {}
+//	private Telephone getOrCreateTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {}
 /*BEGIN_USERBODY*/
 	private void deleteTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {}
-
+	private void deleteTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {
+		String nom = (String)argsMap.get();
+		Telephone telephone = getTelephonesByNom(nom);
+		if(telephone == null){
+			telephone = new Telephone();
+			telephone.setNom(nom);
+			telephone.setOrientation(0);
+			telephone.setVibre(false);
+			addToTelephones(telephone);
+		}
+		return telephone;
+	}
 /*END_USERBODY*/
 }
