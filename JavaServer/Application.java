@@ -203,13 +203,13 @@ public class Application implements ManagedObject
 //	private Telephone getOrCreateTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {}
 /*BEGIN_USERBODY*/
 	private void deleteTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {}
-	private void deleteTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {
-		String nom = (String)argsMap.get();
+	private Telephone getOrCreateTelephone(Map<String, Object> argsMap, JsonServerRequest request) throws Exception {
+		String nom = (String)argsMap.get("nom");
 		Telephone telephone = getTelephonesByNom(nom);
 		if(telephone == null){
 			telephone = new Telephone();
 			telephone.setNom(nom);
-			telephone.setOrientation(0);
+			telephone.setOrientation(0.0);
 			telephone.setVibre(false);
 			addToTelephones(telephone);
 		}

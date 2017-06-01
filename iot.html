@@ -54,7 +54,7 @@ header = function() {
 
 F.defineProperty("Application", "currentHistoriques");
 
-var popupWindow = FV.popupWindow({title:"Historique du " + telephone.nom});
+var popupWindow = FV.popupWindow({title:"Historique"});
 
 google.charts.setOnLoadCallback(function(){
 	var options = {
@@ -125,7 +125,7 @@ table = function(){
 		FV.tag("th",{},[
 			FV.tag("td",{},"nom"),
 			FV.tag("td",{},"orientation"),
-			FV.tag("td",{},"Vibration")
+			FV.tag("td",{},"Vibration"),
 			FV.tag("td",{},"")
 		])
 	];

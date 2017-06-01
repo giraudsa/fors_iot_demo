@@ -54,24 +54,24 @@ header = function() {
 	])
 };
 
-defineProperty("Application", "nom");
-defineProperty("Application", "telephone");
-defineProperty("Application", "orientation");
+F.defineProperty("Application", "nom");
+F.defineProperty("Application", "telephone");
+F.defineProperty("Application", "orientation");
 
-defineTriger(function(){
+F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
 		app.telephone = app.getOrCreateTelephone({
 						"nom":app.nom,
 					},
 					function(retourServeur){
 						app.telephone = retourServeur;
-					}
+					})
 	}
 });
 
 
 //ToDO le trigger ne doit pas etre bien fait.
-defineTriger(function(){
+F.defineTrigger(function(){
 	if(app.telephone != null && app.telephone.vibre){
 		navigator.vibrate(5000);
 	}
@@ -81,7 +81,7 @@ defineName = function(){
 	return FV.tag("input", {type:"FvText",forsObject:app,forsProperty:"nom"});
 };
 
-var chart = FV.tag("div",{margin:"0 auto",width:"600px"});
+var gauge = FV.tag("div",{margin:"0 auto",width:"600px"});
 google.charts.setOnLoadCallback(function(){
 	var options = {
           width: 400, height: 120,
@@ -90,7 +90,7 @@ google.charts.setOnLoadCallback(function(){
           minorTicks: 5
         };
 
-	var chart = new google.visualization.LineChart(chart.domElt);
+	var chart = new google.visualization.Gauge(gauge.domElt);
 
 	F.defineTrigger(function(){
 		if(app.orientation != null){
@@ -105,18 +105,18 @@ google.charts.setOnLoadCallback(function(){
 
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
-		if(app.telephone !== null && ){
+		if(app.telephone != null){
 			app.telephone.orientation = event.beta;
 			app.orientation = event.beta;
 			F.objetManager.commit();
 		}
-	}
+	})
 }
 
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
-		chart,
+		gauge,
 		FV.tag("button", {
 			"background":function(){return o.vibre ? red : lightGreen},
 			"onclick":function(){ o.vibre=!o.vibre; F.objectManager.commit();}
