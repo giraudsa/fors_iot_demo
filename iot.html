@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="iot.css"></link>
+<script src="__JsClient.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+</script>
+<script src="libs/ObjectManager.js"></script>
+<script src="libs/views.js"></script>
+<style>
+	.red {
+		color:red;
+	}
+	.popupWindow{
+		background: #fff;
+		border: 2px solid #000;
+		-webkit-border-radius: 8px;
+		border-radius: 8px;
+		overflow:hidden;
+		padding: 0px;
+		width: auto;
+		position: fixed;
+		font: 12px/16px 'Arial', sans-serif;
+	}
+	.popupWindowTitlebar {
+		background:#ccc;
+		height:24px;
+		vertical-align:middle;
+	}
+	.button {
+		background:#ccc;
+		text-align:center;
+		cursor:pointer;
+	}
+	.button:hover {
+		background:#000;
+		color:#ccc;
+	}
+</style>
+<body> 
+ 
+</body>
+<script>
+google.charts.load('current', {'packages':['corechart']});
+F.startAutoUpdate();
+
+header = function() {
+	return  FV.tag("div",{},[
+			FV.tag("h2",{width:"auto",textAlign:"center"},"IOT Simulator "),
+	])
+};
+
+F.defineProperty("Application", "currentHistoriques");
+
+var popupWindow = FV.popupWindow({title:"Historique du " + telephone.nom});
+
+google.charts.setOnLoadCallback(function(){
+	var options = {
+	  title: 'historique',
+	  curveType: 'function',
+	  height:600,
+	  width:600,
+	  explorer:{},
+	  animation:{
+	    duration: 1000,
+	    easing: 'out',
+	  },
+	  legend: { position: 'bottom' }
+	};
+
+	var chart = new google.visualization.LineChart(popupWindow.domElt);
+
+	F.defineTrigger(function(){
+		if(app.currentHistoriques != null){
+			var data = dataHistorique(app.currentHistoriques);
+			chart.draw(data, options);
+		}
+	});
+});
+
+dataHistorique = function(historiques){
+        var lignes = [['date','T°']];
+        if(historiques != null){
+                historiques.forEach(function(historique){
+                        var lh = ligneData(historique);
+                        if(lh) lignes.push(lh);
+                });
+        }
+	return google.visualization.arrayToDataTable(lignes);
+}
+
+ligneData = function(historique){
+        if(historique != null && historique.timestamp != null && historique.orientation!= null){
+		try{
+			return [historique.timestamp, historique.orientation];
+		}catch(e){
+			return null;
+		}
+        }else return null;
+};
+
+unObjet = function(o){
+	return FV.tag("tr",{},[
+		FV.tag("td",{},o.nom),
+		FV.tag("td",{},o.orientation),
+		FV.tag("td",{},FV.tag("button",{
+		"background":function(){
+			if(o.vibre){
+				return "red";
+			}else{
+				return "lightGreen";
+			}
+		},"onclick":function(){
+			o.vibre=!o.vibre;
+			F.objectManager.commit();
+		}},function(){return o.vibre ? "Stop !" : "Vibre !"})),
+		FV.tag("td", {}, FV.tag("button",{onclick : function(o){app.currentHistoriques = o.historiques; app.currentTelephone = o; }}, "Historique")),
+	]);
+};
+
+table = function(){
+	var ret = [
+		FV.tag("th",{},[
+			FV.tag("td",{},"nom"),
+			FV.tag("td",{},"orientation"),
+			FV.tag("td",{},"Vibration")
+			FV.tag("td",{},"")
+		])
+	];
+	app.telephones.forEach(function(o){
+		ret.push(unObjet(o));
+	});
+	return ret;
+};
+
+
+page =  FV.tag("div",{},[
+		FV.tag("div",{},header()),
+		FV.tag("table",{},table())
+	]
+);
+
+document.body.appendChild(page.domElt);
+</script>

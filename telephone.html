@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="telephone.css"></link>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="__Capteur.js"></script>
+<script>
+</script>
+<script src="libs/ObjectManager.js"></script>
+<script src="libs/views.js"></script>
+<style>
+	.red {
+		color:red;
+	}
+	.popupWindow{
+		background: #fff;
+		border: 2px solid #000;
+		-webkit-border-radius: 8px;
+		border-radius: 8px;
+		overflow:hidden;
+		padding: 0px;
+		width: auto;
+		position: fixed;
+		font: 12px/16px 'Arial', sans-serif;
+	}
+	.popupWindowTitlebar {
+		background:#ccc;
+		height:24px;
+		vertical-align:middle;
+	}
+	.button {
+		background:#ccc;
+		text-align:center;
+		cursor:pointer;
+	}
+	.button:hover {
+		background:#000;
+		color:#ccc;
+	}
+</style>
+<body> 
+ 
+</body>
+<script>
+google.charts.load('current', {'packages':['corechart']});
+F.startAutoUpdate();
+
+navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+header = function() {
+	return  FV.tag("div",{},[
+			FV.tag("h2",{width:"auto",textAlign:"center"},"Capteur/Actionneur Simulator "),
+	])
+};
+
+defineProperty("Application", "nom");
+defineProperty("Application", "telephone");
+defineProperty("Application", "orientation");
+
+defineTriger(function(){
+	if(app.nom != null && !app.telephone){
+		app.telephone = app.getOrCreateTelephone({
+						"nom":app.nom,
+					},
+					function(retourServeur){
+						app.telephone = retourServeur;
+					}
+	}
+});
+
+
+//ToDO le trigger ne doit pas etre bien fait.
+defineTriger(function(){
+	if(app.telephone != null && app.telephone.vibre){
+		navigator.vibrate(5000);
+	}
+});
+
+defineName = function(){
+	return FV.tag("input", {type:"FvText",forsObject:app,forsProperty:"nom"});
+};
+
+var chart = FV.tag("div",{margin:"0 auto",width:"600px"});
+google.charts.setOnLoadCallback(function(){
+	var options = {
+          width: 400, height: 120,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+	var chart = new google.visualization.LineChart(chart.domElt);
+
+	F.defineTrigger(function(){
+		if(app.orientation != null){
+			var data =  google.visualization.arrayToDataTable([
+      						['Label', 'Value'],
+        					['Orientation', app.orientation],
+        				]);
+			chart.draw(data, options);
+		}
+	});
+});
+
+if(window.DeviceOrientationEvent){
+	window.addEventListener('deviceorientation', function(){
+		if(app.telephone !== null && ){
+			app.telephone.orientation = event.beta;
+			app.orientation = event.beta;
+			F.objetManager.commit();
+		}
+	}
+}
+
+
+page =  FV.tag("div",{},[
+		FV.tag("div",{},header()),
+		chart,
+		FV.tag("button", {
+			"background":function(){return o.vibre ? red : lightGreen},
+			"onclick":function(){ o.vibre=!o.vibre; F.objectManager.commit();}
+			}, 
+			function(){return o.vibre ? "Stop !" : "Vibre !"}
+		)
+	]
+);
+
+document.body.appendChild(page.domElt);
+</script>

@@ -1,0 +1,47 @@
+$VERSION_7
+$GEN_PureJSGenerator : HttpObjectExchanger-rwc,StaticDataExchanger-r
+$GEN_JavaGenerator : HttpObjectExchanger-rwc,PersistenceManager-rw,StaticDataExchanger-r
+
+Application
+	deleteTelephone(ManagedObject telephone):void
+	getOrCreateTelephone(string uid, string nom, string orientation):Telephone
+Application.currentTelephone --> Telephone
+Application.telephones<nom <!--@>> Telephone.application
+
+Historique
+	orientation : !float
+	timestamp : !timeStamp
+
+Telephone
+	nom : !string
+	orientation : !float
+	vibre : !bool
+Telephone.historiques<timestamp --@>> Historique
+
+//This module must be used to place elements that are not shared with other processus
+$MOD,clientLocal : ,PureJSGenerator,,,,,rw,
+$CLMOD,clientLocal,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw
+$CLMOD,clientLocal,Historique,rw:orientation-rw,timestamp-rw
+$CLMOD,clientLocal,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
+$MOD,clientLocalTel : ,PureJSGenerator,,,,,rw,
+$CLMOD,clientLocalTel,Application,rw:getOrCreateTelephone-rw
+$CLMOD,clientLocalTel,Telephone,rw:nom-rw,orientation-rw,vibre-rw
+$MOD,httpToJavaServer : HttpObjectExchanger,PureJSGenerator,JavaServer,,,,rwc,
+$CLMOD,httpToJavaServer,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw
+$CLMOD,httpToJavaServer,Historique,rw:orientation-rw,timestamp-rw
+$CLMOD,httpToJavaServer,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
+$MOD,httpToJavaServerTel : ,PureJSGenerator,,,,,rw,
+$CLMOD,httpToJavaServerTel,Application,rw:getOrCreateTelephone-rw
+$CLMOD,httpToJavaServerTel,Telephone,rw:nom-rw,orientation-rw,vibre-rw
+//This module must be used to place elements that are not shared with other processus
+$MOD,serverLocal : ,JavaGenerator,,,,,rw,
+$CLMOD,serverLocal,Application,rw:telephones-rw,deleteTelephone-rw,getOrCreateTelephone-rw
+$CLMOD,serverLocal,Historique,rw:orientation-rw,timestamp-rw
+$CLMOD,serverLocal,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
+$PROC_Capteur : C,PureJSGenerator,clientLocalTel,httpToJavaServerTel
+//This processus gathers all modules running on the java side
+$PROC_JavaServer : S,JavaGenerator,serverLocal
+//This processus gathers all modules running on the js client
+$PROC_JsClient : 0,PureJSGenerator,clientLocal,httpToJavaServer
+$DIAG_Main diagram : $C,Application,330,178,0,0 $C,Telephone,606,240,1,0 $C,Historique,776,435,2,0 $L,0,1,Application.telephones $L,1,2,Telephone.historiques $L,0,1,Application.currentTelephone
+$DIAG_architecture : $P,JavaServer,74,106 $P,JsClient,200,100 $P,Capteur,326,99

@@ -1,0 +1,142 @@
+body {
+	font-family:helvetica,arial,verdana,sans-serif;
+	font-size:16px;
+	margin:0;
+}
+/*button {
+	background:#add2ed;
+}
+button.tab {
+	margin:0;
+	border-bottom:0;
+	padding:5px 10px 5px 10px;
+	font-size:16px;
+}
+button.selected, button:hover {
+	background:#4b9cd7;
+}
+.tabTitles {
+	width:100%;
+	margin:5px 0 0 0;
+	border-bottom:4px solid #4b9cd7;
+}
+.top {
+	padding:10px 5px 10px 5px;
+	background: #0d5183;
+	color:#fff;
+}
+.tabpanel {
+	padding-top:10px;
+}
+.container {
+	margin:10px;
+}
+textarea:disabled{background:#fff;border:0;}
+table.base{
+	border-collapse:collapse;
+	border: 1px solid #eee;
+	font-size:14px;
+	border-top-color:#add2ed;
+	border-bottom-color:#add2ed;
+}
+table.base td {
+	padding:3px 6px 3px 6px;
+	border:1px solid #eee;
+}
+table.base tr:hover {
+	background:#e2eff8;
+}
+table.base th {
+	padding:3px 5px 3px 5px;
+	background:#eee;
+}
+.close {
+	height:18px;
+	width:18px;
+	text-align:center;
+	float:right;
+	cursor:pointer;
+	padding: 0;
+	margin-left:4px;
+}
+.helpcontainer {
+	max-height:300px;
+	//max-width:600px;
+	overflow:auto;
+	margin:5px;
+}
+.popup {
+	padding:10px;
+	display:none;
+	border-radius:8px;
+	border:2px solid #000;
+	background:#eee;
+	position:absolute;
+	top:20%;
+	left:30%;
+}
+.menupopup {
+	position:absolute;
+	background:#eee;
+	border:1px solid #000;
+}
+.menuoption {
+	border-bottom:1px solid #555;
+	cursor:pointer;
+	font-size:12px;
+	padding:2px;
+}
+.menuoption:hover {
+	background:#e2eff8;
+}
+.action {background:#add2ed;}
+.label {background:#ffffff;font-size:12px;font-weight:bold}
+.divDescription {
+	border:1px solid #ccc;
+	margin-top:15px;
+}
+.titleAction {
+	background:#aaf;
+	border-bottom:1px solid #fff;
+}
+.linkAction {
+	cursor:pointer;
+}
+.evolutionName {
+	color:green;
+	cursor:pointer;
+}
+
+.evolutionName.selected {
+	font-weight:bold;
+}
+.actionName {
+	color:red;
+}
+.projectionName {
+	color:blue;
+}
+.popupAction {
+	position:absolute;
+	background:white;
+	border:1px solid black;
+}
+
+.projButton {
+	cursor:pointer;
+	background:white;
+}
+
+.projButton.selected {
+	background:#eee;
+}
+
+.blablaDomaine {
+	font-size:10px;
+	font-style:italic;
+}
+.italic {
+	font-style:italic;
+}
+*/
+
