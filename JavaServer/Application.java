@@ -213,6 +213,7 @@ public class Application implements ManagedObject
 			telephone.setVibre(false);
 			addToTelephones(telephone);
 		}
+		_om.commit();
 		return telephone;
 	}
 /*END_USERBODY*/
