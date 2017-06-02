@@ -73,7 +73,8 @@ F.defineTrigger(function(){
 //ToDO le trigger ne doit pas etre bien fait.
 F.defineTrigger(function(){
 	if(app.telephone != null && app.telephone.vibre){
-		navigator.vibrate(5000);
+		while(app.telephone.vibre)
+			navigator.vibrate(50);
 	}
 });
 
