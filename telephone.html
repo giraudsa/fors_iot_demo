@@ -58,7 +58,7 @@ header = function() {
 
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
-		app.getOrCreateTelephone({"nom":"coucou"},
+		app.getOrCreateTelephone({"nom":app.nom},
 					function(retourServeur){app.telephone =  retourServeur;app.orientation = app.telephone.orientation;},
 					function(){app.telephone =  F.create("Telephone", {nom: app.nom,orientation:0.0} );app.orientation = app.telephone.orientation;}
 					);
@@ -100,9 +100,9 @@ google.charts.setOnLoadCallback(function(){
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
 		if(app.telephone != null){
-			app.telephone.orientation = event.beta;
+			app.telephone.orientation = parseFloat(event.beta);
 			app.orientation = event.beta;
-			F.objetManager.commit();
+			F.commit();
 		}
 	})
 }
@@ -114,7 +114,7 @@ page =  FV.tag("div",{},[
 		defineName(),
 		FV.tag("button", {
 			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
-			"onclick":function(){if(app.telephone == null) return; app.telephone.vibre=!app.telephone.vibre; F.objectManager.commit();}
+			"onclick":function(){if(app.telephone == null) return; app.telephone.vibre=!app.telephone.vibre; F.commit();}
 			}, 
 			function(){if(app.telephone == null)return "not enregistred yet !";return  app.telephone.vibre ? "Stop !" : "Move !"}
 		)
