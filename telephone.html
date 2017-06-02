@@ -69,11 +69,11 @@ F.defineTrigger(function(){
 	}
 });
 
-vibre = function(callback){navigator.vibrate(50);if(app.telephone.vibre) callback(callback);}
+vibre = function(callback){navigator.vibrate([50,50]);if(app.telephone.vibre) callback(callback);}
 
 F.defineTrigger(function(){
-	if(app.telephone != null && app.telephone.vibre){
-		vibre(vibre);
+	if(app.telephone != null){
+		navigator.vibrate(app.telephone.vibre ? 5000 : 0);
 	}
 });
 
