@@ -44,32 +44,28 @@
 <script>
 google.charts.load('current', {'packages':['gauge']});
 F.startAutoUpdate();
+F.defineProperty("Application", "nom");
+F.defineProperty("Application", "telephone");
+F.defineProperty("Application", "orientation");
 
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
 header = function() {
 	return  FV.tag("div",{},[
-			FV.tag("h2",{width:"auto",textAlign:"center"},"Capteur/Actionneur Simulator "),
+			FV.tag("h2",{width:"auto",textAlign:"center"},function(){return "Sensor/Actuator Simulator of " + (app.nom != null && app.nom != "" ? app.nom : "no name");}),
 	])
 };
-
-F.defineProperty("Application", "nom");
-F.defineProperty("Application", "telephone");
-F.defineProperty("Application", "orientation");
 
 
 
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
-		app.telephone = F.create("Telephone", {nom: app.nom,orientation:0.0} );
-		app.orientation = app.telephone.orientation//F.objetManager.call.getOrCreateTelephone(app.nom,
-//					function(retourServeur){return retourServeur;},
-//					function(){return F.create("Telephone", {nom: app.nom,orientation:0.0} );}
-//					)
+		app.getOrCreateTelephone(app.nom,
+					function(retourServeur){app.telephone =  retourServeur;},
+					function(){app.telephone =  F.create("Telephone", {nom: app.nom,orientation:0.0} );}
+					)
 	}
 });
-
-vibre = function(callback){navigator.vibrate([50,50]);if(app.telephone.vibre) callback(callback);}
 
 F.defineTrigger(function(){
 	if(app.telephone != null){
@@ -122,7 +118,7 @@ page =  FV.tag("div",{},[
 			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
 			"onclick":function(){if(app.telephone == null) return; app.telephone.vibre=!app.telephone.vibre; F.objectManager.commit();}
 			}, 
-			function(){if(app.telephone == null)return "Pas de téléphone enregistré";return  app.telephone.vibre ? "Stop !" : "Vibre !"}
+			function(){if(app.telephone == null)return "not enregistred yet !";return  app.telephone.vibre ? "Stop !" : "Move !"}
 		)
 	]
 );
