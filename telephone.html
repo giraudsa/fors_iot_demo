@@ -44,6 +44,7 @@
 <script>
 google.charts.load('current', {'packages':['gauge']});
 F.startAutoUpdate();
+F.defineProperty("Application", "nomTemporaire");
 F.defineProperty("Application", "nom");
 F.defineProperty("Application", "telephone");
 F.defineProperty("Application", "orientation");
@@ -52,7 +53,7 @@ navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mo
 
 header = function() {
 	return  FV.tag("div",{},[
-			FV.tag("h2",{width:"auto",textAlign:"center"},function(){return "Sensor/Actuator Simulator of " + (app.nom != null && app.nom != "" ? app.nom : "no name");}),
+			FV.tag("h2",{width:"auto",textAlign:"center"},function(){return (app.nom != null && app.nom != "" ? "Sensor/Actuator Simulator of " + app.nom : "Enter your name");}),
 	])
 };
 
@@ -72,7 +73,7 @@ F.defineTrigger(function(){
 });
 
 defineName = function(){
-	return FV.tag("input", {type:"FvText",forsObject:app,forsProperty:"nom"});
+	return FV.tag("input", {visibility:function(){return (app.telephone != null) ? "hidden" : "visible"}, type:"FvText",forsObject:app,forsProperty:"nomTemporaire"});
 };
 
 var gauge = FV.tag("div",{margin:"0 auto",width:"600px"});
@@ -114,7 +115,7 @@ page =  FV.tag("div",{},[
 		defineName(),
 		FV.tag("button", {
 			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
-			"onclick":function(){if(app.telephone == null) return; app.telephone.vibre=!app.telephone.vibre; F.commit();}
+			"onclick":function(){if(app.telephone == null) {app.nom = app.nomTemporaire; return;} app.telephone.vibre=!app.telephone.vibre; F.commit();}
 			}, 
 			function(){if(app.telephone == null)return "not enregistred yet !";return  app.telephone.vibre ? "Stop !" : "Move !"}
 		)
