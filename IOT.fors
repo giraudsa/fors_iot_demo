@@ -30,7 +30,7 @@ $MOD,httpToJavaServer : HttpObjectExchanger,PureJSGenerator,JavaServer,,,,rwc,
 $CLMOD,httpToJavaServer,Application,rw:currentTelephone-rw,telephones-rw,deleteTelephone-rw,getOrCreateTelephone-rw
 $CLMOD,httpToJavaServer,Historique,rw:orientation-rw,timestamp-rw
 $CLMOD,httpToJavaServer,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
-$MOD,httpToJavaServerTel : ,PureJSGenerator,,,,,rw,
+$MOD,httpToJavaServerTel : HttpObjectExchanger,PureJSGenerator,JavaServer,,,,rw,
 $CLMOD,httpToJavaServerTel,Application,rw:getOrCreateTelephone-rw
 $CLMOD,httpToJavaServerTel,Telephone,rw:nom-rw,orientation-rw,vibre-rw
 //This module must be used to place elements that are not shared with other processus
@@ -43,5 +43,5 @@ $PROC_Capteur : C,PureJSGenerator,clientLocalTel,httpToJavaServerTel
 $PROC_JavaServer : S,JavaGenerator,serverLocal
 //This processus gathers all modules running on the js client
 $PROC_JsClient : 0,PureJSGenerator,clientLocal,httpToJavaServer
-$DIAG_Main diagram : $C,Application,330,178,0,0 $C,Telephone,606,240,1,0 $C,Historique,776,435,2,0 $L,0,1,Application.telephones $L,1,2,Telephone.historiques $L,0,1,Application.currentTelephone
+$DIAG_Main diagram : $C,Application,216,180,0,0 $C,Telephone,542,293,1,0 $C,Historique,794,381,2,0 $L,0,1,Application.telephones $L,1,2,Telephone.historiques $L,0,1,Application.currentTelephone
 $DIAG_architecture : $P,JavaServer,74,106 $P,JsClient,200,100 $P,Capteur,326,99

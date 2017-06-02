@@ -56,14 +56,12 @@ header = function() {
 	])
 };
 
-
-
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
-		app.getOrCreateTelephone(app.nom,
-					function(retourServeur){app.telephone =  retourServeur;},
-					function(){app.telephone =  F.create("Telephone", {nom: app.nom,orientation:0.0} );}
-					)
+		app.getOrCreateTelephone({"nom":"coucou"},
+					function(retourServeur){app.telephone =  retourServeur;app.orientation = app.telephone.orientation;},
+					function(){app.telephone =  F.create("Telephone", {nom: app.nom,orientation:0.0} );app.orientation = app.telephone.orientation;}
+					);
 	}
 });
 
