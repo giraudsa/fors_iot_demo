@@ -57,14 +57,15 @@ F.defineProperty("Application", "nom");
 F.defineProperty("Application", "telephone");
 F.defineProperty("Application", "orientation");
 
+
+
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
-		app.telephone = app.getOrCreateTelephone({
-						"nom":app.nom,
-					},
-					function(retourServeur){
-						app.telephone = retourServeur;
-					})
+		app.telephone = F.create("Telephone", {nom: app.nom,orientation:0.0} );
+		app.orientation = app.telephone.orientation//F.objetManager.call.getOrCreateTelephone(app.nom,
+//					function(retourServeur){return retourServeur;},
+//					function(){return F.create("Telephone", {nom: app.nom,orientation:0.0} );}
+//					)
 	}
 });
 
