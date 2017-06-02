@@ -69,12 +69,11 @@ F.defineTrigger(function(){
 	}
 });
 
+vibre = function(callback){navigator.vibrate(50);if(app.telephone.vibre) callback(callback);}
 
-//ToDO le trigger ne doit pas etre bien fait.
 F.defineTrigger(function(){
 	if(app.telephone != null && app.telephone.vibre){
-		while(app.telephone.vibre)
-			navigator.vibrate(50);
+		vibre(vibre);
 	}
 });
 
