@@ -43,7 +43,7 @@
  
 </body>
 <script>
-google.charts.load('current', {'packages':['corechart']});
+google.charts.load('current', {'packages':['gauge']});
 F.startAutoUpdate();
 
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -118,10 +118,10 @@ page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
 		gauge,
 		FV.tag("button", {
-			"background":function(){return o.vibre ? red : lightGreen},
-			"onclick":function(){ o.vibre=!o.vibre; F.objectManager.commit();}
+			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
+			"onclick":function(){if(app.telephone == null) return; app.telephone.vibre=!app.telephone.vibre; F.objectManager.commit();}
 			}, 
-			function(){return o.vibre ? "Stop !" : "Vibre !"}
+			function(){if(app.telephone == null)return "Pas de téléphone enregistré";return  app.telephone.vibre ? "Stop !" : "Vibre !"}
 		)
 	]
 );
