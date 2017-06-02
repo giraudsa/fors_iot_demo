@@ -34,7 +34,7 @@ $MOD,httpToJavaServerTel : HttpObjectExchanger,PureJSGenerator,JavaServer,,,,rw,
 $CLMOD,httpToJavaServerTel,Application,rw:getOrCreateTelephone-rw
 $CLMOD,httpToJavaServerTel,Telephone,rw:nom-rw,orientation-rw,vibre-rw
 //This module must be used to place elements that are not shared with other processus
-$MOD,serverLocal : ,JavaGenerator,,,,,rw,
+$MOD,serverLocal : PersistenceManager,JavaGenerator,,,0,0,rw,
 $CLMOD,serverLocal,Application,rw:telephones-rw,deleteTelephone-rw,getOrCreateTelephone-rw
 $CLMOD,serverLocal,Historique,rw:orientation-rw,timestamp-rw
 $CLMOD,serverLocal,Telephone,rw:nom-rw,orientation-ro,vibre-rw,application-rw,historiques-rw
