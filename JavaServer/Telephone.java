@@ -179,15 +179,23 @@ public class Telephone implements ManagedObject
 
 /*BEGIN_USERBODY*/
 
-	private DataChangeObserver trigger = new TriggerChange();
+	private DataChangeObserver trigger;
 	
+	
+
+	public Telephone(boolean vibre, double alpha, double beta) throws Exception {
+		super();
+		this.setVibre(vibre);
+		this.setAlpha(alpha);
+		this.setBeta(beta);
+		trigger = new TriggerChange();
+		trigger.execute();
+	}
+
+
 
 	public class TriggerChange extends DataChangeObserver{
 
-		public TriggerChange() {
-			super();
-			execute();
-		}
 
 		private long pasArchive = TimeUnit.MINUTES.toMillis(4);
 				
