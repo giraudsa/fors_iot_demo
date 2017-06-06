@@ -183,7 +183,7 @@ public class Telephone implements ManagedObject
 	
 
 	public Telephone(String nom, boolean vibre, double alpha, double beta) throws Exception {
-		super();
+		this();
 		this.setNom(nom);
 		this.setVibre(vibre);
 		this.setAlpha(alpha);
