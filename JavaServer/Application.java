@@ -207,11 +207,7 @@ public class Application implements ManagedObject
 		String nom = (String)argsMap.get("nom");
 		Telephone telephone = getTelephonesByNom(nom);
 		if(telephone == null){
-			telephone = new Telephone();
-			telephone.setNom(nom);
-			telephone.setAlpha(0.0);
-			telephone.setBeta(0.0);
-			telephone.setVibre(false);
+			telephone = new Telephone(nom, false, 0.0, 0.0);
 			addToTelephones(telephone);
 		}
 		_om.commit();
