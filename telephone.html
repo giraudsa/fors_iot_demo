@@ -89,7 +89,7 @@ if(window.DeviceOrientationEvent){
 		if(app.telephone != null && !app.isChanging && Date.now() - app.lastChange > 20){
 			var beta = parseFloat(event.beta);
 			var alpha = parseFloat(event.alpha);
-			attitude.setRoll(90 alpha);
+			attitude.setRoll(90 + alpha);
    			attitude.setPitch(-45 + beta);
 			commitSiNecessaire(alpha, beta);
 		}
