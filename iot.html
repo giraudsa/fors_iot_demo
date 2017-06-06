@@ -54,7 +54,7 @@ header = function() {
 
 F.defineProperty("Application", "currentHistoriques");
 
-var popupWindow = FV.popupWindow({title:"Historique"});
+var histo = FV.tag("div",{margin:"0 auto",width:"600px"});
 
 google.charts.setOnLoadCallback(function(){
 	var options = {
@@ -70,7 +70,7 @@ google.charts.setOnLoadCallback(function(){
 	  legend: { position: 'bottom' }
 	};
 
-	var chart = new google.visualization.LineChart(popupWindow.domElt);
+	var chart = new google.visualization.LineChart(histo.domElt);
 
 	F.defineTrigger(function(){
 		if(app.currentHistoriques != null){
@@ -92,45 +92,57 @@ dataHistorique = function(historiques){
 }
 
 ligneData = function(historique){
-        if(historique != null && historique.timestamp != null && historique.orientation!= null){
+        if(historique != null && historique.timestamp != null && historique.alpha!= null && historique.beta != null){
 		try{
-			return [historique.timestamp, historique.orientation];
+			return [historique.timestamp, historique.alpha, historique.beta];
 		}catch(e){
 			return null;
 		}
         }else return null;
 };
 
-unObjet = function(o){
+unTelephone = function(o){
 	return FV.tag("tr",{},[
 		FV.tag("td",{},o.nom),
-		FV.tag("td",{},o.orientation),
-		FV.tag("td",{},FV.tag("button",{
-		"background":function(){
-			if(o.vibre){
-				return "red";
-			}else{
-				return "lightGreen";
-			}
-		},"onclick":function(){
-			o.vibre=!o.vibre;
-			F.objectManager.commit();
-		}},function(){return o.vibre ? "Stop !" : "Vibre !"})),
-		FV.tag("td", {}, FV.tag("button",{onclick : function(o){app.currentHistoriques = o.historiques; app.currentTelephone = o; }}, "Historique")),
+		FV.tag("td",{},o.alpha),
+		FV.tag("td",{},o.beta),
+		FV.tag("td",{},FV.tag(
+			"button",
+			{
+				"background":function(){
+					if(o.vibre){
+						return "red";
+					}else{
+						return "lightGreen";
+					}
+				},"onclick":function(){
+					o.vibre=!o.vibre;
+					F.objectManager.commit();
+				}
+			},
+			function(o){return o.vibre ? "Stop !" : "Vibre !"})),
+		FV.tag("td", {}, FV.tag(
+					"button",
+					{
+						"onclick": function(o){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}
+					},
+					 "Historique")
+		),
 	]);
 };
 
 table = function(){
 	var ret = [
-		FV.tag("th",{},[
+		FV.tag("tr",{},[
 			FV.tag("td",{},"nom"),
-			FV.tag("td",{},"orientation"),
+			FV.tag("td",{},"alpha"),
+			FV.tag("td",{},"beta"),
 			FV.tag("td",{},"Vibration"),
 			FV.tag("td",{},"")
 		])
 	];
-	app.telephones.forEach(function(o){
-		ret.push(unObjet(o));
+	app.telephones.forEach(function(telephone){
+		ret.push(unTelephone(telephone));
 	});
 	return ret;
 };

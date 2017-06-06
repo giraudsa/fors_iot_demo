@@ -69,6 +69,23 @@ public class Historique implements ManagedObject
 	}
 	public static Collection<Historique> getAllHistorique() {
 		Collection<Historique> vals = _om.getAll(Historique.class);
+			if (vals != null) {
+				ArrayList<Historique> list = new ArrayList<Historique>(vals);
+				Collections.sort(list, new Comparator<Historique>() {
+					public int compare(Historique a,Historique b) {
+						if( a == null && b ==null) return 0;
+						if( a == null) return -1;
+						if( b == null) return +1;
+						Date sa = a.getTimestamp();
+						Date sb = b.getTimestamp();
+						if( sa == null && sb ==null) return 0;
+						if( sa == null) return -1;
+						if( sb == null) return 1;
+						return sa.compareTo(sb);
+					}
+				});
+				return Collections.unmodifiableList(list);
+			}
 		return vals;
 	}
 
@@ -99,10 +116,14 @@ public class Historique implements ManagedObject
 		Map<Object,ManagedObject> indexMap=null;
 	}
 
-	public Double getOrientation() {
-		return (Double)__get("orientation");
+	public Double getAlpha() {
+		return (Double)__get("alpha");
 	}
-	public boolean setOrientation(Double value) throws Exception { return __set("orientation",value); }
+	public boolean setAlpha(Double value) throws Exception { return __set("alpha",value); }
+	public Double getBeta() {
+		return (Double)__get("beta");
+	}
+	public boolean setBeta(Double value) throws Exception { return __set("beta",value); }
 	public Date getTimestamp() {
 		return (Date)__get("timestamp");
 	}

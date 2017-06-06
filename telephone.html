@@ -3,6 +3,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="telephone.css"></link>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="libs/flight/js/jquery.flightindicators.min.js"></script>
 <script src="__Capteur.js"></script>
 <script>
 </script>
@@ -47,7 +49,8 @@ F.startAutoUpdate();
 F.defineProperty("Application", "nomTemporaire");
 F.defineProperty("Application", "nom");
 F.defineProperty("Application", "telephone");
-F.defineProperty("Application", "orientation");
+F.defineProperty("Application", "beta");
+F.defineProperty("Application", "alpha");
 
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
@@ -60,8 +63,8 @@ header = function() {
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
 		app.getOrCreateTelephone({"nom":app.nom},
-					function(retourServeur){app.telephone =  retourServeur;app.orientation = app.telephone.orientation;},
-					function(){app.telephone =  F.create("Telephone", {nom: app.nom,orientation:0.0} );app.orientation = app.telephone.orientation;}
+					function(retourServeur){app.telephone =  retourServeur;app.beta = app.telephone.beta; app.alpha = app.telephone.alpha;},
+					function(){app.telephone =  F.create("Telephone", {nom: app.nom,beta:0.0, alpha:0.0} );app.beta = app.telephone.beta; app.alpha = app.telephone.alpha;}
 					);
 	}
 });
@@ -88,10 +91,11 @@ google.charts.setOnLoadCallback(function(){
 	var chart = new google.visualization.Gauge(gauge.domElt);
 
 	F.defineTrigger(function(){
-		if(app.orientation != null){
+		if(app.beta != null){
 			var data =  google.visualization.arrayToDataTable([
       						['Label', 'Value'],
-        					['Orientation', app.telephone.orientation],
+        					['beta', app.telephone.beta],
+						['alpha', app.telephone.alpha]
         				]);
 			chart.draw(data, options);
 		}
@@ -101,8 +105,10 @@ google.charts.setOnLoadCallback(function(){
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
 		if(app.telephone != null){
-			app.telephone.orientation = parseFloat(event.beta);
-			app.orientation = event.beta;
+			app.telephone.beta = parseFloat(event.beta);
+			app.telephone.alpha = parseFloat(event.alpha);
+			app.beta = event.beta;
+			app.alpha = event.alpha;
 			F.commit();
 		}
 	})

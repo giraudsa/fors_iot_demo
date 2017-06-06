@@ -209,7 +209,8 @@ public class Application implements ManagedObject
 		if(telephone == null){
 			telephone = new Telephone();
 			telephone.setNom(nom);
-			telephone.setOrientation(0.0);
+			telephone.setAlpha(0.0);
+			telephone.setBeta(0.0);
 			telephone.setVibre(false);
 			addToTelephones(telephone);
 		}

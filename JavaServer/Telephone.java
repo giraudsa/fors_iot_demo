@@ -119,14 +119,18 @@ public class Telephone implements ManagedObject
 		Map<Object,ManagedObject> indexMap=null;
 	}
 
+	public Double getAlpha() {
+		return (Double)__get("alpha");
+	}
+	public boolean setAlpha(Double value) throws Exception { return __set("alpha",value); }
+	public Double getBeta() {
+		return (Double)__get("beta");
+	}
+	public boolean setBeta(Double value) throws Exception { return __set("beta",value); }
 	public String getNom() {
 		return (String)__get("nom");
 	}
 	public boolean setNom(String value) throws Exception { return __set("nom",value); }
-	public Double getOrientation() {
-		return (Double)__get("orientation");
-	}
-	public boolean setOrientation(Double value) throws Exception { return __set("orientation",value); }
 	public Boolean getVibre() {
 		return (Boolean)__get("vibre");
 	}
