@@ -211,6 +211,7 @@ public class Telephone implements ManagedObject
 			else System.out.println("next call to the telephone change trigger");
 			Date now = new Date();
 			if(now.getTime() - getLastChange().getTime() > pasArchive) {
+				lastChange = now;
 				addToHistoriques(newHistorique(now));
 				purgeHistoriqueDesVieuxEnregistrements(now);
 			}
