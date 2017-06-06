@@ -48,8 +48,6 @@ F.startAutoUpdate();
 F.defineProperty("Application", "nomTemporaire");
 F.defineProperty("Application", "nom");
 F.defineProperty("Application", "telephone");
-F.defineProperty("Application", "beta");
-F.defineProperty("Application", "alpha");
 app.lastCommit = Date.now();
 app.isCommiting = false;
 
@@ -64,8 +62,8 @@ header = function() {
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
 		app.getOrCreateTelephone({"nom":app.nom},
-					function(retourServeur){app.telephone =  retourServeur;app.beta = app.telephone.beta; app.alpha = app.telephone.alpha;},
-					function(){app.telephone =  F.create("Telephone", {nom: app.nom,beta:0.0, alpha:0.0} );app.beta = app.telephone.beta; app.alpha = app.telephone.alpha;}
+					function(retourServeur){app.telephone =  retourServeur;},
+					function(){app.telephone =  F.create("Telephone", {nom: app.nom,beta:0.0, alpha:0.0} );}
 					);
 	}
 });
@@ -95,10 +93,8 @@ if(window.DeviceOrientationEvent){
 		if(app.telephone != null){
 			app.telephone.beta = parseFloat(event.beta);
 			app.telephone.alpha = parseFloat(event.alpha);
-			attitude.setRoll(app.telephone.alpha);
-			attitude.setPitch(app.telephone.beta);
-			app.beta = event.beta;
-			app.alpha = event.alpha;
+			attitude.setRoll(90 - app.telephone.alpha);
+			attitude.setPitch(90 - app.telephone.beta);
 			commitSiNecessaire();
 		}
 	})
@@ -120,10 +116,5 @@ page =  FV.tag("div",{},[
 
 document.body.appendChild(page.domElt);
 var attitude = $.flightIndicator("#attitude", 'attitude', {size:350, roll:8, pitch:3, showBox : true});
-F.defineTrigger(function(){
-	if(app.beta != null && app.alpha != null){
-		attitude.setRoll(app.telephone.alpha);
-		attitude.setPitch(app.telephone.beta);
-	}
-});
+
 </script>
