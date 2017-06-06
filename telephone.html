@@ -52,6 +52,8 @@ F.defineProperty("Application", "nom");
 F.defineProperty("Application", "telephone");
 F.defineProperty("Application", "beta");
 F.defineProperty("Application", "alpha");
+app.lastCommit = Date.now();
+app.isCommiting = false;
 
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 
@@ -103,14 +105,14 @@ var gauge = FV.tag("span", {"id":"attitude"});
 	});
 });*/
 
-var attitude = $.flightIndicator("#attitude", 'attitude', {size:350, roll:8, pitch:3, showBox : true});
 
-F.defineTrigger(function(){
-	if(app.beta != null && app.alpha != null){
-		attitude.setRoll(app.telephone.alpha);
-		attitude.setPitch(app.telephone.beta);
+
+commitSiNecessaire = function(){
+	if(!app.isCommiting && Date.now() - app.lastCommit > 1000){
+		app.isCommiting = true;		
+		F.commit(function(){app.isCommiting = false; app.lastCommit = Date.now();});
 	}
-});
+};
 
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
@@ -119,7 +121,7 @@ if(window.DeviceOrientationEvent){
 			app.telephone.alpha = parseFloat(event.alpha);
 			app.beta = event.beta;
 			app.alpha = event.alpha;
-			F.commit();
+			commitSiNecessaire();
 		}
 	})
 }
@@ -139,4 +141,11 @@ page =  FV.tag("div",{},[
 );
 
 document.body.appendChild(page.domElt);
+var attitude = $.flightIndicator("#attitude", 'attitude', {size:350, roll:8, pitch:3, showBox : true});
+F.defineTrigger(function(){
+	if(app.beta != null && app.alpha != null){
+		attitude.setRoll(app.telephone.alpha);
+		attitude.setPitch(app.telephone.beta);
+	}
+});
 </script>
