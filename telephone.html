@@ -80,20 +80,7 @@ defineName = function(){
 divGauge = function(){return FV.tag("div", {visibility:function(){return (app.telephone == null) ? "hidden" : "visible"}}, gauge);};
 var gauge = FV.tag("span", {id:"attitude", visibility:function(){return (app.telephone == null) ? "hidden" : "visible"}});
 
-var compteur = 0;
-commitSiNecessaire = function(){
-	if(app.telephone != null && compteur > 50){
-		compteur = 0;
-   		attitude.setRoll(app.telephone.gamma);
-   		attitude.setPitch(45 + app.telephone.beta);
-	}else{
-		compteur++;
-	}
-	if(!app.isCommiting && Date.now() - app.lastCommit > 1000){
-		app.isCommiting = true;		
-		F.commit(function(){app.isCommiting = false; app.lastCommit = Date.now();});
-	}
-};
+
 
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
@@ -120,5 +107,19 @@ page =  FV.tag("div",{},[
 );
 
 document.body.appendChild(page.domElt);
-var attitude = $.flightIndicator("#attitude", 'attitude', {size:350, roll:8, pitch:3, showBox : true});
+var attitude = $.flightIndicator("#attitude", 'attitude', {size:400});
+var compteur = 0;
+commitSiNecessaire = function(){
+	if(app.telephone != null && compteur > 50){
+		compteur = 0;
+   		attitude.setRoll(app.telephone.gamma);
+   		attitude.setPitch(45 + app.telephone.beta);
+	}else{
+		compteur++;
+	}
+	if(!app.isCommiting && Date.now() - app.lastCommit > 10000){
+		app.isCommiting = true;		
+		F.commit(function(){app.isCommiting = false; app.lastCommit = Date.now();});
+	}
+};
 </script>
