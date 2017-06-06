@@ -80,7 +80,7 @@ defineName = function(){
 	return FV.tag("input", {visibility:function(){return (app.telephone != null) ? "hidden" : "visible"}, type:"FvText",forsObject:app,forsProperty:"nomTemporaire"});
 };
 divGauge = function(){return FV.tag("div", {}, gauge);};
-var gauge = FV.tag("span", {});
+var gauge = FV.tag("span", {"id":"attitude"});
 /*google.charts.setOnLoadCallback(function(){
 	var options = {
           width: 400, height: 120,
@@ -103,7 +103,7 @@ var gauge = FV.tag("span", {});
 	});
 });*/
 
-var attitude = $.flightIndicator("#" + gauge.id, 'attitude', {size:350, roll:8, pitch:3, showBox : true});
+var attitude = $.flightIndicator("#attitude", 'attitude', {size:350, roll:8, pitch:3, showBox : true});
 
 F.defineTrigger(function(){
 	if(app.beta != null && app.alpha != null){
