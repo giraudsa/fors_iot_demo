@@ -2,9 +2,10 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="telephone.css"></link>
+<link rel="stylesheet" type="text/css" href="libs/flight/css/flightindicators.css" />
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script src="libs/flight/js/jquery.flightindicators.min.js"></script>
+<script src="libs/flight/js/jquery.flightindicators.js"></script>
 <script src="__Capteur.js"></script>
 <script>
 </script>
@@ -44,7 +45,7 @@
  
 </body>
 <script>
-google.charts.load('current', {'packages':['gauge']});
+//google.charts.load('current', {'packages':['gauge']});
 F.startAutoUpdate();
 F.defineProperty("Application", "nomTemporaire");
 F.defineProperty("Application", "nom");
@@ -78,9 +79,9 @@ F.defineTrigger(function(){
 defineName = function(){
 	return FV.tag("input", {visibility:function(){return (app.telephone != null) ? "hidden" : "visible"}, type:"FvText",forsObject:app,forsProperty:"nomTemporaire"});
 };
-
-var gauge = FV.tag("div",{margin:"0 auto",width:"600px"});
-google.charts.setOnLoadCallback(function(){
+divGauge = function(){return FV.tag("div", {}, gauge);};
+var gauge = FV.tag("span", {});
+/*google.charts.setOnLoadCallback(function(){
 	var options = {
           width: 400, height: 120,
           redFrom: 90, redTo: 100,
@@ -100,6 +101,15 @@ google.charts.setOnLoadCallback(function(){
 			chart.draw(data, options);
 		}
 	});
+});*/
+
+var attitude = $.flightIndicator("#" + gauge.id, 'attitude', {size:350, roll:8, pitch:3, showBox : true});
+
+F.defineTrigger(function(){
+	if(app.beta != null && app.alpha != null){
+		attitude.setRoll(app.telephone.alpha);
+		attitude.setPitch(app.telephone.beta);
+	}
 });
 
 if(window.DeviceOrientationEvent){
@@ -117,7 +127,7 @@ if(window.DeviceOrientationEvent){
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
-		gauge,
+		divGauge(),
 		defineName(),
 		FV.tag("button", {
 			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
