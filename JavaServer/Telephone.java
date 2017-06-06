@@ -206,7 +206,6 @@ public class Telephone implements ManagedObject
 			Date now = new Date();
 			addToHistoriques(newHistorique(now));
 			purgeHistoriqueDesVieuxEnregistrements(now);
-			_om.commit();
 			return null;
 			
 		}
