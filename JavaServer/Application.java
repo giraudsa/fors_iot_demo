@@ -207,6 +207,7 @@ public class Application implements ManagedObject
 		String nom = (String)argsMap.get("nom");
 		Telephone telephone = getTelephonesByNom(nom);
 		if(telephone == null){
+			System.out.println("creation du téléphone" + nom);
 			telephone = new Telephone(nom, false, 0.0, 0.0);
 			addToTelephones(telephone);
 		}
