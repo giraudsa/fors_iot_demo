@@ -179,8 +179,13 @@ public class Telephone implements ManagedObject
 /*BEGIN_USERBODY*/
 
 	private DataChangeObserver trigger;
+	private Date lastChange;
 	
-	
+	private Date getLastChange() {
+		Collection<Historique> h = getHistoriques();
+		if(lastChange == null) return new Date();
+		else return lastChange;
+	}
 
 	public Telephone(String nom, boolean vibre, double alpha, double beta) throws Exception {
 		this();
@@ -197,25 +202,27 @@ public class Telephone implements ManagedObject
 	public class TriggerChange extends DataChangeObserver{
 
 
-		private long pasArchive = TimeUnit.MINUTES.toMillis(4);
+		private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
+		private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
 				
 		@Override
 		public Object doTheJob(boolean isFirstCall) throws Exception {
 			if(isFirstCall) System.out.println("first call to the telephone change trigger");
 			else System.out.println("next call to the telephone change trigger");
 			Date now = new Date();
-			addToHistoriques(newHistorique(now));
-			purgeHistoriqueDesVieuxEnregistrements(now);
+			if(now.getTime() - getLastChange().getTime() > pasArchive) {
+				addToHistoriques(newHistorique(now));
+				purgeHistoriqueDesVieuxEnregistrements(now);
+			}
 			return null;
-			
 		}
 		
 		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
 			for(Historique histo : getHistoriques()) {
-				if(now.getTime() - histo.getTimestamp().getTime() > pasArchive) {
+				if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
 					System.out.println("on supprime un historique trop vieux");
 					histo.delete();
-				}
+				}else return;
 			}
 		}
 
