@@ -109,22 +109,14 @@ unTelephone = function(o){
 		FV.tag("td",{},FV.tag(
 			"button",
 			{
-				"background":function(){
-					if(o.vibre){
-						return "red";
-					}else{
-						return "lightGreen";
-					}
-				},"onclick":function(){
-					o.vibre=!o.vibre;
-					F.objectManager.commit();
-				}
+				"background":function(){return o.vibre ? "red" :  "lightGreen";},
+				"onclick":function(){o.vibre=!o.vibre; F.objectManager.commit();}
 			},
-			function(o){return o.vibre ? "Stop !" : "Vibre !"})),
+			function(){return o.vibre ? "Stop !" : "Move !"})),
 		FV.tag("td", {}, FV.tag(
 					"button",
 					{
-						"onclick": function(o){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}
+						"onclick": function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}
 					},
 					 "Historique")
 		),
