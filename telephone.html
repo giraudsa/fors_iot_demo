@@ -47,7 +47,6 @@
 F.startAutoUpdate();
 F.defineProperty("Application", "nomTemporaire");
 F.defineProperty("Application", "nom");
-F.defineProperty("Application", "telephone");
 app.lastCommit = Date.now();
 app.isCommiting = false;
 
@@ -112,7 +111,7 @@ var compteur = 0;
 commitSiNecessaire = function(){
 	if(app.telephone != null && compteur > 50){
 		compteur = 0;
-   		attitude.setRoll(app.telephone.gamma);
+   		attitude.setRoll(app.telephone.alpha);
    		attitude.setPitch(45 + app.telephone.beta);
 	}else{
 		compteur++;
