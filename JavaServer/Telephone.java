@@ -183,7 +183,7 @@ public class Telephone implements ManagedObject
 	
 	private Date getLastChange() {
 		Collection<Historique> h = getHistoriques();
-		if(lastChange == null) return new Date();
+		if(lastChange == null) return new Date(0);
 		else return lastChange;
 	}
 
