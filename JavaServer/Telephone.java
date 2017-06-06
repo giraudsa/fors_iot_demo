@@ -1,5 +1,8 @@
 package JavaServer;
+import java.sql.Time;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import fors.objectsManagement.*;
 /*BEGIN_USERHEADER*/
 /*END_USERHEADER*/
@@ -148,20 +151,20 @@ public class Telephone implements ManagedObject
 
 	public Collection<Historique> getHistoriques() {
 		Set<Historique> vals = (Set<Historique>)_om.getTransaction().getValues(getId(),"historiques",(Set<Historique>)__getShared("historiques"));
-			if (vals != null) {
-				ArrayList<Historique> list = new ArrayList<Historique>(vals);
-				Collections.sort(list, new Comparator<Historique>() {
-					public int compare(Historique a,Historique b) {
-						if( a == null && b ==null) return 0;
-						if( a == null) return -1;
-						if( b == null) return +1;
-						Date da = a.getTimestamp();
-						Date db = b.getTimestamp();
-						return da.compareTo(db);
-					}
-				});
-				return Collections.unmodifiableList(list);
-			}
+		if (vals != null) {
+			ArrayList<Historique> list = new ArrayList<Historique>(vals);
+			Collections.sort(list, new Comparator<Historique>() {
+				public int compare(Historique a,Historique b) {
+					if( a == null && b ==null) return 0;
+					if( a == null) return -1;
+					if( b == null) return +1;
+					Date da = a.getTimestamp();
+					Date db = b.getTimestamp();
+					return da.compareTo(db);
+				}
+			});
+			return Collections.unmodifiableList(list);
+		}
 		return vals;
 	}
 	public void addToHistoriques(ManagedObject obj) throws Exception {
@@ -174,6 +177,51 @@ public class Telephone implements ManagedObject
 		__reset("historiques");
 	}
 
-/*BEGIN_USERBODY*/
-/*END_USERBODY*/
+	/*BEGIN_USERBODY*/
+
+	private DataChangeObserver trigger = new TriggerChange();
+	
+
+	public class TriggerChange extends DataChangeObserver{
+
+		public TriggerChange() {
+			super();
+			execute();
+		}
+
+		private long pasArchive = TimeUnit.MINUTES.toMillis(4);
+				
+		@Override
+		public Object doTheJob(boolean isFirstCall) throws Exception {
+			Date now = new Date();
+			addToHistoriques(newHistorique(now));
+			purgeHistoriqueDesVieuxEnregistrements(now);
+			return null;
+			
+		}
+		
+		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
+			for(Historique histo : getHistoriques()) {
+				if(now.getTime() - histo.getTimestamp().getTime() > pasArchive) {
+					histo.delete();
+				}
+			}
+		}
+
+		private Historique newHistorique(Date date) throws Exception {
+			Historique historique = new Historique();
+			historique.setAlpha(getAlpha() == null ? 0.0 : getAlpha());
+			historique.setBeta(getBeta() == null ? 0.0 : getBeta());
+			historique.setTimestamp(date);
+			return historique;
+		}
+		
+		@Override
+		public void doDelete() {
+			trigger = null;
+		}
+		
+	}
+
+	/*END_USERBODY*/
 }

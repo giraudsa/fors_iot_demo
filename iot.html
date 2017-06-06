@@ -81,14 +81,17 @@ google.charts.setOnLoadCallback(function(){
 });
 
 dataHistorique = function(historiques){
-        var lignes = [['date','T°']];
+	var data = new google.visualization.DataTable();
+     	data.addColumn('number', 'Time');
+      	data.addColumn('number', 'Alpha');
+      	data.addColumn('number', 'Beta');
         if(historiques != null){
                 historiques.forEach(function(historique){
                         var lh = ligneData(historique);
-                        if(lh) lignes.push(lh);
+                        if(lh) data.push(lh);
                 });
         }
-	return google.visualization.arrayToDataTable(lignes);
+	return data;
 }
 
 ligneData = function(historique){

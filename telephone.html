@@ -6,6 +6,7 @@
 <link rel="stylesheet" type="text/css" href="libs/flight/css/flightindicators.css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 <script src="libs/flight/js/jquery.flightindicators.js"></script>
+<script src="libs/gyro.js"></script>
 <script src="__Capteur.js"></script>
 <script>
 </script>
@@ -90,8 +91,9 @@ var gauge = FV.tag("span", {id:"attitude", visibility:function(){return (app.tel
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
 		if(app.telephone != null && !app.isChanging && Date.now() - app.lastChange > 20){
-			var alpha = parseFloat(event.alpha);
-			var beta = parseFloat(event.beta);
+			var gyr = gyro.getOrientation();
+			var alpha = parseFloat(gyr.alpha);
+			var beta = parseFloat(gyr.beta);
 			if(app.firstAlpha == null) app.firstAlpha = alpha;
 			if(app.firstBeta == null) app.firstBeta = beta;
 			attitude.setRoll(-app.firstAlpha + alpha);

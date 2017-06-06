@@ -25,6 +25,9 @@ Thumbs.db
 
 # Fors generated files #
 ######################
+!libs/
 __*.*
 libs/*
+!libs/gyro.js
+!libs/flight/
 SAEData/*
