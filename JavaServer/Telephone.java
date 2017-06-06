@@ -177,7 +177,7 @@ public class Telephone implements ManagedObject
 		__reset("historiques");
 	}
 
-	/*BEGIN_USERBODY*/
+/*BEGIN_USERBODY*/
 
 	private DataChangeObserver trigger = new TriggerChange();
 	
@@ -223,5 +223,5 @@ public class Telephone implements ManagedObject
 		
 	}
 
-	/*END_USERBODY*/
+/*END_USERBODY*/
 }
