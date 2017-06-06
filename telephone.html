@@ -93,8 +93,8 @@ if(window.DeviceOrientationEvent){
 		if(app.telephone != null){
 			app.telephone.beta = parseFloat(event.beta);
 			app.telephone.alpha = parseFloat(event.alpha);
-			attitude.setRoll(90 - app.telephone.alpha);
-			attitude.setPitch(90 - app.telephone.beta);
+			attitude.setRoll(-90 + app.telephone.alpha);
+			attitude.setPitch(app.telephone.beta);
 			commitSiNecessaire();
 		}
 	})
