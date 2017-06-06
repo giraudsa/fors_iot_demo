@@ -201,6 +201,8 @@ public class Telephone implements ManagedObject
 				
 		@Override
 		public Object doTheJob(boolean isFirstCall) throws Exception {
+			if(isFirstCall) System.out.println("first call to the telephone change trigger");
+			else System.out.println("next call to the telephone change trigger");
 			Date now = new Date();
 			addToHistoriques(newHistorique(now));
 			purgeHistoriqueDesVieuxEnregistrements(now);
@@ -212,6 +214,7 @@ public class Telephone implements ManagedObject
 		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
 			for(Historique histo : getHistoriques()) {
 				if(now.getTime() - histo.getTimestamp().getTime() > pasArchive) {
+					System.out.println("on supprime un historique trop vieux");
 					histo.delete();
 				}
 			}
@@ -228,6 +231,7 @@ public class Telephone implements ManagedObject
 		@Override
 		public void doDelete() {
 			trigger = null;
+			super.doDelete();
 		}
 		
 	}
