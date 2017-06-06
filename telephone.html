@@ -85,9 +85,11 @@ var gauge = FV.tag("span", {id:"attitude", visibility:function(){return (app.tel
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
 		if(app.telephone != null){
-			app.telephone.beta = parseFloat(event.beta);
-			app.telephone.alpha = parseFloat(event.alpha);
-			commitSiNecessaire();
+			var beta = parseFloat(event.beta);
+			var alpha = parseFloat(event.alpha);
+			attitude.setRoll(alpha);
+   			attitude.setPitch(45 + beta);
+			commitSiNecessaire(alpha, beta);
 		}
 	})
 }
@@ -108,17 +110,13 @@ page =  FV.tag("div",{},[
 
 document.body.appendChild(page.domElt);
 var attitude = $.flightIndicator("#attitude", 'attitude', {size:400});
-var compteur = 0;
-commitSiNecessaire = function(){
-	if(app.telephone != null && compteur > 50){
-		compteur = 0;
-   		attitude.setRoll(app.telephone.alpha);
-   		attitude.setPitch(45 + app.telephone.beta);
-	}else{
-		compteur++;
-	}
+
+commitSiNecessaire = function(alpha, beta){
+   	
 	if(!app.isCommiting && Date.now() - app.lastCommit > 10000){
-		app.isCommiting = true;		
+		app.isCommiting = true;
+		app.telephone.alpha = alpha;
+		app.telephone.beta = beta;	
 		F.commit(function(){app.isCommiting = false; app.lastCommit = Date.now();});
 	}
 };
