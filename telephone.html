@@ -92,7 +92,7 @@ if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
 		if(app.telephone != null){
 			app.telephone.beta = parseFloat(event.beta);
-			app.telephone.alpha = parseFloat(event.gamma);
+			app.telephone.alpha = parseFloat(event.alpha);
 			commitSiNecessaire();
 		}
 	})
@@ -117,6 +117,6 @@ var attitude = $.flightIndicator("#attitude", 'attitude', {size:350, roll:8, pit
 setInterval(function() {
 	if(app.telephone != null){
    		attitude.setRoll(app.telephone.gamma);
-   		attitude.setPitch(app.telephone.beta);
+   		attitude.setPitch(45 + app.telephone.beta);
 	}}, 20);
 </script>
