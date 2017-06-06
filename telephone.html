@@ -86,7 +86,7 @@ var gauge = FV.tag("span", {id:"attitude", visibility:function(){return (app.tel
 
 if(window.DeviceOrientationEvent){
 	window.addEventListener('deviceorientation', function(){
-		if(app.telephone != null && !app.isChanging && Date.now() - lastChange > 20){
+		if(app.telephone != null && !app.isChanging && Date.now() - app.lastChange > 20){
 			var beta = parseFloat(event.beta);
 			var alpha = parseFloat(event.alpha);
 			attitude.setRoll(alpha);
