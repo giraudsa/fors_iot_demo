@@ -188,8 +188,8 @@ draw = function() {
     radius_mul_kappa = radius * KAPPA;
     
     // calculate pitch and roll
-    roll = Math.atan2(aX, aY);
-    pitch = -Math.atan2(aZ, aX * Math.sin(roll) + aY * Math.cos(roll));
+    roll = arrondir(Math.atan2(aX, aY));
+    pitch = arrondir(-Math.atan2(aZ, aX * Math.sin(roll) + aY * Math.cos(roll)));
     commitSiNecessaire(pitch, roll);
     
     // calculate horizon
@@ -268,7 +268,11 @@ drawScale =  function(offset, scaleWidth) {
     
     context.restore();
 
-  };
+};
+
+arrondir = function(double){
+	return Math.round(double*100)/100;
+}
 
 updateAccelerations =  function(evt) {
 
