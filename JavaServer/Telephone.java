@@ -187,56 +187,52 @@ public class Telephone implements ManagedObject
 		this.setVibre(vibre);
 		this.setAlpha(alpha);
 		this.setBeta(beta);
-		trigger = new TriggerChange();
-		trigger.execute();
-	}
+		trigger = new DataChangeObserver(){
 
 
+			private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
+			private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
 
-	public class TriggerChange extends DataChangeObserver{
-
-
-		private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
-		private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
-
-		@Override
-		public Object doTheJob(boolean isFirstCall) throws Exception {
-			synchronized(synchro) {
-				if(isFirstCall) System.out.println("first call to the telephone change trigger");
-				else System.out.println("next call to the telephone change trigger");
-				Date now = new Date();
-				if(now.getTime() - lastChange.getTime() > pasArchive) {
-					lastChange = now;
-					addToHistoriques(newHistorique(now));
-					purgeHistoriqueDesVieuxEnregistrements(now);
+			@Override
+			public Object doTheJob(boolean isFirstCall) throws Exception {
+				synchronized(synchro) {
+					if(isFirstCall) System.out.println("first call to the telephone change trigger");
+					else System.out.println("next call to the telephone change trigger");
+					Date now = new Date();
+					if(now.getTime() - lastChange.getTime() > pasArchive) {
+						lastChange = now;
+						addToHistoriques(newHistorique(now));
+						purgeHistoriqueDesVieuxEnregistrements(now);
+					}
+					return null;
 				}
-				return null;
 			}
-		}
 
-		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
-			for(Historique histo : getHistoriques()) {
-				if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
-					System.out.println("on supprime un historique trop vieux");
-					histo.delete();
-				}else return;
+			private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
+				for(Historique histo : getHistoriques()) {
+					if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
+						System.out.println("on supprime un historique trop vieux");
+						histo.delete();
+					}else return;
+				}
 			}
-		}
 
-		private Historique newHistorique(Date date) throws Exception {
-			Historique historique = new Historique();
-			historique.setAlpha(getAlpha() == null ? 0.0 : getAlpha());
-			historique.setBeta(getBeta() == null ? 0.0 : getBeta());
-			historique.setTimestamp(date);
-			return historique;
-		}
+			private Historique newHistorique(Date date) throws Exception {
+				Historique historique = new Historique();
+				historique.setAlpha(getAlpha() == null ? 0.0 : getAlpha());
+				historique.setBeta(getBeta() == null ? 0.0 : getBeta());
+				historique.setTimestamp(date);
+				return historique;
+			}
 
-		@Override
-		public void doDelete() {
-			trigger = null;
-			super.doDelete();
-		}
+			@Override
+			public void doDelete() {
+				trigger = null;
+				super.doDelete();
+			}
 
+		};
+		trigger.execute();
 	}
 
 /*END_USERBODY*/
