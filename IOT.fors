@@ -41,7 +41,7 @@ $MOD,serverLocal : PersistenceManager,JavaGenerator,,,0,0,rw,0
 $CLMOD,serverLocal,Application,rw:telephones-rw,deleteTelephone-rw,getOrCreateTelephone-rw
 $CLMOD,serverLocal,Historique,rw:alpha-rw,beta-rw,timestamp-rw
 $CLMOD,serverLocal,Telephone,rw:alpha-ro,beta-ro,nom-rw,vibre-rw,application-rw,historiques-rw
-$PROC_Capteur : C,PureJSGenerator,clientLocalTel,httpToJavaServerTel
+$PROC_Capteur : 0,PureJSGenerator,clientLocalTel,httpToJavaServerTel
 //This processus gathers all modules running on the java side
 $PROC_JavaServer : S,JavaGenerator,serverLocal
 //This processus gathers all modules running on the js client
