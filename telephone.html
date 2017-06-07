@@ -5,8 +5,6 @@
 <link rel="stylesheet" type="text/css" href="telephone.css"></link>
 <link rel="stylesheet" type="text/css" href="libs/flight/css/flightindicators.css" />
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-<script src="libs/flight/js/jquery.flightindicators.js"></script>
-<script src="libs/gyro.js"></script>
 <script src="__Capteur.js"></script>
 <script>
 </script>
@@ -68,8 +66,8 @@ header = function() {
 F.defineTrigger(function(){
 	if(app.nom != null && !app.telephone){
 		app.getOrCreateTelephone({"nom":app.nom},
-					function(retourServeur){app.telephone =  retourServeur;},
-					function(){app.telephone =  F.create("Telephone", {nom: app.nom,beta:0.0, alpha:0.0} );}
+					function(retourServeur){app.telephone =  retourServeur; initAndRun();},
+					function(){app.telephone =  F.create("Telephone", {nom: app.nom,beta:0.0, alpha:0.0} ); initAndRun();}
 					);
 	}
 });
@@ -83,30 +81,22 @@ F.defineTrigger(function(){
 defineName = function(){
 	return FV.tag("input", {visibility:function(){return (app.telephone != null) ? "hidden" : "visible"}, type:"FvText",forsObject:app,forsProperty:"nomTemporaire"});
 };
-divGauge = function(){return FV.tag("div", {visibility:function(){return (app.telephone == null) ? "hidden" : "visible"}}, gauge);};
-var gauge = FV.tag("span", {id:"attitude", visibility:function(){return (app.telephone == null) ? "hidden" : "visible"}});
 
-
-
-if(window.DeviceOrientationEvent){
-	window.addEventListener('deviceorientation', function(){
-		if(app.telephone != null && !app.isChanging && Date.now() - app.lastChange > 20){
-			var gyr = gyro.getOrientation();
-			var alpha = parseFloat(gyr.alpha);
-			var beta = parseFloat(gyr.beta);
-			if(app.firstAlpha == null) app.firstAlpha = alpha;
-			if(app.firstBeta == null) app.firstBeta = beta;
-			attitude.setRoll(-app.firstAlpha + alpha);
-   			attitude.setPitch(-app.firstBeta + beta);
-			commitSiNecessaire(alpha, beta);
-		}
-	})
-}
-
+var FV_canvas = FV.tag("canvas",{width:"270", height:"270", id:"canvas"});
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
-		divGauge(),
+		FV_canvas,
+		FV.tag("div", {visibility:function(){return (app.telephone == null) ? "hidden" : "visible"},
+				position:"absolute",
+				left:"50%",
+				top:"50%",
+				"margin-left":"-180px",
+				"margin-top":"-180px",
+				width:"360px",
+				height:"360px",
+				background:"transparent url(images/tool_320.png) no-repeat",
+				"background-position":"50% 50%"}),
 		defineName(),
 		FV.tag("button", {
 			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
@@ -118,14 +108,213 @@ page =  FV.tag("div",{},[
 );
 
 document.body.appendChild(page.domElt);
-var attitude = $.flightIndicator("#attitude", 'attitude', {size:400});
 
-commitSiNecessaire = function(alpha, beta){
-	if(!app.isCommiting && Date.now() - app.lastCommit > 1000){
+commitSiNecessaire = function(pitch, roll){
+	if(!app.isCommiting && Date.now() - app.lastCommit > 1000 && (app.telephone.alpha != roll || app.telephone.beta != pitch)){
 		app.isCommiting = true;
-		app.telephone.alpha = alpha;
-		app.telephone.beta = beta;	
+		app.telephone.alpha = roll;
+		app.telephone.beta = pitch;	
 		F.commit(function(){app.isCommiting = false; app.lastCommit = Date.now();});
 	}
 };
+
+var canvas;
+var TWO_PI = 2 * Math.PI, HALF_PI = Math.PI / 2, KAPPA = 0.5522847498, radius_mul_kappa;
+var GROUND_COLOR = "#72cde4", LINE_COLOR = "#ffffff", SKY_COLOR = "#323232";
+var context;
+var diameter = 0, radius = 0;
+var pitch = 0, roll = 0;
+var horizon, aspectRatio = 0;
+var _rawRoll = 0;
+var aX = 0, aY = 0, aZ = 0;
+var rotationCorrection = 0;
+
+initAndRun = function() {
+      canvas = document.getElementById("canvas");
+      context = canvas.getContext("2d");
+
+      var backgroundLoaded = false, topLoaded = false;
+      
+      var backgroundImage = new Image();
+      backgroundImage.onload = function() {
+        backgroundLoaded = true;
+        if (topLoaded) {
+          run();
+        }
+      }
+      backgroundImage.src = "images/bg.jpg";
+
+      var topImage = new Image();
+      topImage.onload = function() {
+        topLoaded = true;
+        if (backgroundLoaded) {
+          run();
+        }
+      }
+      topImage.src = "images/tool_320.png";
+
+};
+
+
+
+draw = function() {
+
+    aspectRatio = document.body.clientWidth / document.body.clientHeight;
+
+    if (rotationCorrection !== 0 
+          && (rotationCorrection % HALF_PI) == 0
+            && (rotationCorrection / HALF_PI) !== 1) {
+
+      aspectRatio = document.body.clientHeight / document.body.clientWidth;
+
+    }
+
+    diameter = Math.min(canvas.width, canvas.height);
+    radius = diameter / 2;
+
+    radius_mul_kappa = radius * KAPPA;
+    
+    // calculate pitch and roll
+    roll = Math.atan2(aX, aY);
+    pitch = -Math.atan2(aZ, aX * Math.sin(roll) + aY * Math.cos(roll));
+    commitSiNecessaire(pitch, roll);
+    
+    // calculate horizon
+    horizon = getHorizon(pitch);
+    
+    // repaint
+    repaint();
+    
+    requestAnimationFrame(draw);
+
+};
+
+repaint =  function() {
+
+    context.save();
+    
+    context.translate(radius, radius);
+    context.rotate(roll - rotationCorrection);
+    
+    context.fillStyle = GROUND_COLOR;
+    context.strokeStyle = LINE_COLOR;
+    context.lineWidth = 3;
+
+    // draw ground
+    context.beginPath();
+    context.arc(0, 0, radius, 0, 2 * Math.PI, false);
+    context.fill();
+    
+    context.fillStyle = SKY_COLOR;
+
+    // draw sky
+    context.beginPath();
+    context.moveTo( -radius, 0);
+    context.arcTo(0, -radius*2, radius, 0, radius);
+    context.bezierCurveTo(radius, horizon * KAPPA, radius_mul_kappa, horizon, 0, horizon);
+    context.bezierCurveTo( -radius_mul_kappa, horizon, -radius, horizon * KAPPA, -radius, 0);
+    context.closePath();
+    context.stroke();
+    context.fill();
+
+    context.lineWidth = 2;
+    
+    // draw scale
+    drawScale(36, radius * 0.8);
+    drawScale(30, radius * 0.1);
+    drawScale(24, radius * 0.6);
+    drawScale(18, radius * 0.1);
+    drawScale(12, radius * 0.4);
+    drawScale(6, radius * 0.1);
+
+    context.restore();
+
+};
+
+drawScale =  function(offset, scaleWidth) {
+
+    context.save();
+
+    context.beginPath();
+    context.rect( -scaleWidth / 2, -diameter, scaleWidth, 2 * diameter);
+    context.clip();
+
+    horizon = getHorizon(pitch + offset * Math.PI / 180);
+    context.beginPath();
+    context.moveTo(radius, 0);
+    context.bezierCurveTo(radius, horizon * KAPPA, radius_mul_kappa, horizon, 0, horizon);
+    context.bezierCurveTo( -radius_mul_kappa, horizon, -radius, horizon * KAPPA, -radius, 0);
+    context.stroke();
+
+    horizon = getHorizon(pitch -offset * Math.PI / 180);
+    context.beginPath();
+    context.moveTo(radius, 0);
+    context.bezierCurveTo(radius, horizon * KAPPA, radius_mul_kappa, horizon, 0, horizon);
+    context.bezierCurveTo( -radius_mul_kappa, horizon, -radius, horizon * KAPPA, -radius, 0);
+    context.stroke();
+    
+    context.restore();
+
+  };
+
+updateAccelerations =  function(evt) {
+
+    if (!evt || !evt.accelerationIncludingGravity) {
+      return;
+    }
+
+    var accelData = evt.accelerationIncludingGravity;
+
+    var _aX = accelData.x;
+    var _aY = accelData.y;
+    var _aZ = accelData.z;
+
+    if (aspectRatio > 1 && _rawRoll > 0) {
+
+      aX = _aY;
+      aY = -_aX;
+
+    } else if (aspectRatio > 1 && _rawRoll <= 0) {
+
+      aX = -_aY;
+      aY = _aX;
+
+    } else {
+
+      aX = _aX;
+      aY = _aY;
+
+    }
+
+    aZ = _aZ;
+
+};
+
+updateOrientations =  function(evt) {
+
+    if (!evt || evt.gamma == null) {
+      return;
+    }
+
+    _rawRoll = evt.gamma;
+
+};
+
+getHorizon = function(pitch) {
+
+    return Math.sin(pitch) * radius;
+
+};
+  
+
+run = function() {
+
+    window.addEventListener('devicemotion', updateAccelerations, true);
+    window.addEventListener('deviceorientation', updateOrientations, true);
+
+    draw();
+
+};
+
+
 </script>

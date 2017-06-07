@@ -1,6 +1,5 @@
 package JavaServer;
 import java.util.*;
-
 import fors.objectsManagement.*;
 /*BEGIN_USERHEADER*/
 import java.util.concurrent.TimeUnit;
@@ -150,20 +149,20 @@ public class Telephone implements ManagedObject
 
 	public Collection<Historique> getHistoriques() {
 		Set<Historique> vals = (Set<Historique>)_om.getTransaction().getValues(getId(),"historiques",(Set<Historique>)__getShared("historiques"));
-		if (vals != null) {
-			ArrayList<Historique> list = new ArrayList<Historique>(vals);
-			Collections.sort(list, new Comparator<Historique>() {
-				public int compare(Historique a,Historique b) {
-					if( a == null && b ==null) return 0;
-					if( a == null) return -1;
-					if( b == null) return +1;
-					Date da = a.getTimestamp();
-					Date db = b.getTimestamp();
-					return da.compareTo(db);
-				}
-			});
-			return Collections.unmodifiableList(list);
-		}
+			if (vals != null) {
+				ArrayList<Historique> list = new ArrayList<Historique>(vals);
+				Collections.sort(list, new Comparator<Historique>() {
+					public int compare(Historique a,Historique b) {
+						if( a == null && b ==null) return 0;
+						if( a == null) return -1;
+						if( b == null) return +1;
+						Date da = a.getTimestamp();
+						Date db = b.getTimestamp();
+						return da.compareTo(db);
+					}
+				});
+				return Collections.unmodifiableList(list);
+			}
 		return vals;
 	}
 	public void addToHistoriques(ManagedObject obj) throws Exception {
@@ -176,7 +175,7 @@ public class Telephone implements ManagedObject
 		__reset("historiques");
 	}
 
-	/*BEGIN_USERBODY*/
+/*BEGIN_USERBODY*/
 
 	private DataChangeObserver trigger;
 	private Date lastChange = new Date(0);
@@ -240,5 +239,5 @@ public class Telephone implements ManagedObject
 
 	}
 
-	/*END_USERBODY*/
+/*END_USERBODY*/
 }
