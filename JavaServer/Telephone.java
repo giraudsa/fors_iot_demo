@@ -176,16 +176,11 @@ public class Telephone implements ManagedObject
 		__reset("historiques");
 	}
 
-/*BEGIN_USERBODY*/
+	/*BEGIN_USERBODY*/
 
 	private DataChangeObserver trigger;
-	private Date lastChange;
-	
-	private Date getLastChange() {
-		Collection<Historique> h = getHistoriques();
-		if(lastChange == null) return new Date(0);
-		else return lastChange;
-	}
+	private Date lastChange = new Date(0);
+	private Object synchro = new Object();
 
 	public Telephone(String nom, boolean vibre, double alpha, double beta) throws Exception {
 		this();
@@ -204,20 +199,22 @@ public class Telephone implements ManagedObject
 
 		private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
 		private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
-				
+
 		@Override
 		public Object doTheJob(boolean isFirstCall) throws Exception {
-			if(isFirstCall) System.out.println("first call to the telephone change trigger");
-			else System.out.println("next call to the telephone change trigger");
-			Date now = new Date();
-			if(now.getTime() - getLastChange().getTime() > pasArchive) {
-				lastChange = now;
-				addToHistoriques(newHistorique(now));
-				purgeHistoriqueDesVieuxEnregistrements(now);
+			synchronized(synchro) {
+				if(isFirstCall) System.out.println("first call to the telephone change trigger");
+				else System.out.println("next call to the telephone change trigger");
+				Date now = new Date();
+				if(now.getTime() - lastChange.getTime() > pasArchive) {
+					lastChange = now;
+					addToHistoriques(newHistorique(now));
+					purgeHistoriqueDesVieuxEnregistrements(now);
+				}
+				return null;
 			}
-			return null;
 		}
-		
+
 		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
 			for(Historique histo : getHistoriques()) {
 				if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
@@ -234,14 +231,14 @@ public class Telephone implements ManagedObject
 			historique.setTimestamp(date);
 			return historique;
 		}
-		
+
 		@Override
 		public void doDelete() {
 			trigger = null;
 			super.doDelete();
 		}
-		
+
 	}
 
-/*END_USERBODY*/
+	/*END_USERBODY*/
 }
