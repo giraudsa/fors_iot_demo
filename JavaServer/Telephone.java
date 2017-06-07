@@ -187,6 +187,7 @@ public class Telephone implements ManagedObject
 		this.setVibre(vibre);
 		this.setAlpha(alpha);
 		this.setBeta(beta);
+		Telephone tel = this;
 		trigger = new DataChangeObserver(){
 
 
@@ -201,7 +202,11 @@ public class Telephone implements ManagedObject
 					Date now = new Date();
 					if(now.getTime() - lastChange.getTime() > pasArchive) {
 						lastChange = now;
-						addToHistoriques(newHistorique(now));
+						Historique historique = new Historique();
+						historique.setAlpha(tel.getAlpha() == null ? 0.0 : tel.getAlpha());
+						historique.setBeta(tel.getBeta() == null ? 0.0 : tel.getBeta());
+						historique.setTimestamp(now);
+						addToHistoriques(historique);
 						purgeHistoriqueDesVieuxEnregistrements(now);
 					}
 					return null;
@@ -215,14 +220,6 @@ public class Telephone implements ManagedObject
 						histo.delete();
 					}else return;
 				}
-			}
-
-			private Historique newHistorique(Date date) throws Exception {
-				Historique historique = new Historique();
-				historique.setAlpha(getAlpha() == null ? 0.0 : getAlpha());
-				historique.setBeta(getBeta() == null ? 0.0 : getBeta());
-				historique.setTimestamp(date);
-				return historique;
 			}
 
 			@Override
