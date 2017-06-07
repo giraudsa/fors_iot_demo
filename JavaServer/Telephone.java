@@ -1,5 +1,6 @@
 package JavaServer;
 import java.util.*;
+
 import fors.objectsManagement.*;
 /*BEGIN_USERHEADER*/
 import java.util.concurrent.TimeUnit;
@@ -149,20 +150,20 @@ public class Telephone implements ManagedObject
 
 	public Collection<Historique> getHistoriques() {
 		Set<Historique> vals = (Set<Historique>)_om.getTransaction().getValues(getId(),"historiques",(Set<Historique>)__getShared("historiques"));
-			if (vals != null) {
-				ArrayList<Historique> list = new ArrayList<Historique>(vals);
-				Collections.sort(list, new Comparator<Historique>() {
-					public int compare(Historique a,Historique b) {
-						if( a == null && b ==null) return 0;
-						if( a == null) return -1;
-						if( b == null) return +1;
-						Date da = a.getTimestamp();
-						Date db = b.getTimestamp();
-						return da.compareTo(db);
-					}
-				});
-				return Collections.unmodifiableList(list);
-			}
+		if (vals != null) {
+			ArrayList<Historique> list = new ArrayList<Historique>(vals);
+			Collections.sort(list, new Comparator<Historique>() {
+				public int compare(Historique a,Historique b) {
+					if( a == null && b ==null) return 0;
+					if( a == null) return -1;
+					if( b == null) return +1;
+					Date da = a.getTimestamp();
+					Date db = b.getTimestamp();
+					return da.compareTo(db);
+				}
+			});
+			return Collections.unmodifiableList(list);
+		}
 		return vals;
 	}
 	public void addToHistoriques(ManagedObject obj) throws Exception {
@@ -177,7 +178,7 @@ public class Telephone implements ManagedObject
 
 /*BEGIN_USERBODY*/
 
-	public DataChangeObserver trigger;
+	private DataChangeObserver trigger;
 	private Date lastChange = new Date(0);
 	private Object synchro = new Object();
 
@@ -187,49 +188,62 @@ public class Telephone implements ManagedObject
 		this.setVibre(vibre);
 		this.setAlpha(alpha);
 		this.setBeta(beta);
-		Telephone tel = this;
-		trigger = new DataChangeObserver(){
-
-
-			private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
-			private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
-
-			@Override
-			public Object doTheJob(boolean isFirstCall) throws Exception {
-				synchronized(synchro) {
-					if(isFirstCall) System.out.println("first call to the telephone change trigger");
-					else System.out.println("next call to the telephone change trigger");
-					Date now = new Date();
-					if(now.getTime() - lastChange.getTime() > pasArchive) {
-						lastChange = now;
-						Historique historique = new Historique();
-						historique.setAlpha(tel.getAlpha() == null ? 0.0 : tel.getAlpha());
-						historique.setBeta(tel.getBeta() == null ? 0.0 : tel.getBeta());
-						historique.setTimestamp(now);
-						addToHistoriques(historique);
-						purgeHistoriqueDesVieuxEnregistrements(now);
-					}
-					return null;
-				}
-			}
-
-			private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
-				for(Historique histo : getHistoriques()) {
-					if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
-						System.out.println("on supprime un historique trop vieux");
-						histo.delete();
-					}else return;
-				}
-			}
-
-			@Override
-			public void doDelete() {
-				trigger = null;
-				super.doDelete();
-			}
-
-		};
+		trigger = new TriggerChange();
 		trigger.execute();
+	}
+
+
+
+	public class TriggerChange extends DataChangeObserver{
+
+
+		private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
+		private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
+
+		@Override
+		public Object doTheJob(boolean isFirstCall) throws Exception {
+			synchronized(synchro) {
+				ArrayList<DataChangeObserver> toObserve = getterToObserve();
+				Date now = new Date();
+				if(now.getTime() - lastChange.getTime() > pasArchive) {
+					lastChange = now;
+					addToHistoriques(newHistorique(now));
+					purgeHistoriqueDesVieuxEnregistrements(now);
+				}
+				_om.getTransaction().resumeTracking(toObserve);
+				return null;
+			}
+		}
+
+		private ArrayList<DataChangeObserver> getterToObserve() {
+			getAlpha();
+			getBeta();
+			return _om.getTransaction().suspendTracking();
+		}
+
+		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
+			for(Historique histo : getHistoriques()) {
+				if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
+					System.out.println("on supprime un historique trop vieux");
+					histo.delete();
+				}else return;
+			}
+		}
+
+		private Historique newHistorique(Date date) throws Exception {
+			Historique historique = new Historique();
+			historique.setAlpha(getAlpha() == null ? 0.0 : getAlpha());
+			historique.setBeta(getBeta() == null ? 0.0 : getBeta());
+			historique.setTimestamp(date);
+			return historique;
+		}
+
+		@Override
+		public void doDelete() {
+			trigger = null;
+			super.doDelete();
+		}
+
 	}
 
 /*END_USERBODY*/
