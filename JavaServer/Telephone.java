@@ -177,7 +177,7 @@ public class Telephone implements ManagedObject
 
 /*BEGIN_USERBODY*/
 
-	private DataChangeObserver trigger;
+	public DataChangeObserver trigger;
 	private Date lastChange = new Date(0);
 	private Object synchro = new Object();
 
