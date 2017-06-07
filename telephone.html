@@ -82,21 +82,32 @@ defineName = function(){
 	return FV.tag("input", {visibility:function(){return (app.telephone != null) ? "hidden" : "visible"}, type:"FvText",forsObject:app,forsProperty:"nomTemporaire"});
 };
 
-var FV_canvas = FV.tag("canvas",{width:"270", height:"270", id:"canvas"});
+var FV_canvas = FV.tag("canvas",{position: "absolute",
+				left: "50%",
+				top: "50%",
+				marginLeft: "-135px",
+				marginTop: "-135px",
+				width:"270px",
+				height:"270px",
+				id:"canvas"});
+
+
+var bousole = FV.tag("div", {visibility:function(){return (app.telephone == null) ? "hidden" : "visible"},
+				position:"absolute",
+				left:"50%",
+				top:"50%",
+				marginLeft:"-180px",
+				marginTop:"-180px",
+				width:"360px",
+				height:"360px",
+				background:"transparent url(images/tool_320.png) no-repeat",
+				backgroundPosition:"50% 50%"}),
+
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
 		FV_canvas,
-		FV.tag("div", {visibility:function(){return (app.telephone == null) ? "hidden" : "visible"},
-				position:"absolute",
-				left:"50%",
-				top:"50%",
-				"margin-left":"-180px",
-				"margin-top":"-180px",
-				width:"360px",
-				height:"360px",
-				background:"transparent url(images/tool_320.png) no-repeat",
-				"background-position":"50% 50%"}),
+		bousole,
 		defineName(),
 		FV.tag("button", {
 			"background":function(){if(app.telephone == null) return "darkgray"; else return app.telephone.vibre ? "red" : "lightGreen"},
@@ -132,6 +143,8 @@ var rotationCorrection = 0;
 initAndRun = function() {
       canvas = document.getElementById("canvas");
       context = canvas.getContext("2d");
+      canvas.width = 270;
+      canvas.height = 270;
 
       var backgroundLoaded = false, topLoaded = false;
       

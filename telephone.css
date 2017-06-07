@@ -12,14 +12,6 @@ body {
 	background-size: 100% 100%;
 }
 
-#canvas {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	margin-left: -135px;
-	margin-top: -135px;
-}
-
 
 /*button {
 	background:#add2ed;
