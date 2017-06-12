@@ -1,5 +1,7 @@
 package JavaServer;
 import java.util.*;
+
+import JavaServer.Telephone.TriggerChange;
 import fors.objectsManagement.*;
 /*BEGIN_USERHEADER*/
 /*END_USERHEADER*/
@@ -210,6 +212,8 @@ public class Application implements ManagedObject
 			System.out.println("creation du téléphone" + nom);
 			telephone = new Telephone(nom, false, 0.0, 0.0);
 			addToTelephones(telephone);
+		}else if(telephone.getTrigger() == null){
+			telephone.newTrigger();
 		}
 		_om.commit();
 		return telephone;

@@ -179,7 +179,16 @@ public class Telephone implements ManagedObject
 
 	private DataChangeObserver trigger;
 	private Date lastChange = new Date(0);
-	private Object synchro = new Object();
+	private final Object synchro = new Object();
+	
+	public DataChangeObserver getTrigger() {
+		return trigger;
+	}
+	
+	public void newTrigger() {
+		this.trigger = new TriggerChange("telephone");
+		trigger.execute();
+	}
 
 	public Telephone(String nom, boolean vibre, double alpha, double beta) throws Exception {
 		this();
@@ -187,8 +196,7 @@ public class Telephone implements ManagedObject
 		this.setVibre(vibre);
 		this.setAlpha(alpha);
 		this.setBeta(beta);
-		trigger = new TriggerChange("telephone");
-		trigger.execute();
+		newTrigger();
 	}
 
 
