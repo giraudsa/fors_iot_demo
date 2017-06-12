@@ -81,7 +81,7 @@ google.charts.setOnLoadCallback(function(){
 
 dataHistorique = function(historiques){
 	var data = new google.visualization.DataTable();
-     	data.addColumn('number', 'Time');
+     	data.addColumn('date', 'Time');
       	data.addColumn('number', 'Alpha');
       	data.addColumn('number', 'Beta');
         if(historiques != null){
@@ -96,7 +96,7 @@ dataHistorique = function(historiques){
 ligneData = function(historique){
         if(historique != null && historique.timestamp != null && historique.alpha!= null && historique.beta != null){
 		try{
-			return [historique.timestamp.getTime(), historique.alpha, historique.beta];
+			return [historique.timestamp, historique.alpha, historique.beta];
 		}catch(e){
 			return null;
 		}
@@ -132,7 +132,7 @@ unTelephone = function(o){
 				onclick:function(){o.vibre=!o.vibre; F.objectManager.commit();},
 				color:function(){return o.vibre ? "red" : "lightGreen";}},o.nom)),
 		FV.tag("tr",{}, FV.tag("td",{}, FV.tag("div", 
-					{position:"relative", cursor:"pointer", onclick:function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}},
+					{position:"relative", cursor:"pointer", onclick:function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:function(){return "history of " + o.nom}}, histo);}},
 					[
 						FV_Canvas(o),
 						FV.tag("div",{width :"288px",height :"288px",position:"relative",background:"transparent url(images/tool_320.png) no-repeat",backgroundSize:"100%", backgroundPosition:"50% 50%"})
