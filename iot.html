@@ -104,38 +104,43 @@ ligneData = function(historique){
         }else return null;
 };
 
+FV_Canvas = function(o){
+	ret = FV.tag("canvas", {
+				paddingLeft: "45px",
+				paddingTop: "41px",
+				marginLeft: "auto",
+				marginRight: "auto",
+				display: "block",
+				position:"fixed",
+				width:"54px",
+				height:"54px",
+				});
+	var canvas = ret.domElt;
+	canvas.width = 54;
+	canvas.height = 54;
+	var context = canvas.getContext("2d");
+	
+	F.defineTrigger(function(){draw(canvas, context, o.beta, o.alpha)});
+	return ret;
+}
+
+
 unTelephone = function(o){
 	return FV.tag("tr",{},[
-		FV.tag("td",{},o.nom),
-		FV.tag("td",{},o.alpha),
-		FV.tag("td",{},o.beta),
-		FV.tag("td",{},FV.tag(
-			"button",
-			{
-				"background":function(){return o.vibre ? "red" :  "lightGreen";},
-				"onclick":function(){o.vibre=!o.vibre; F.objectManager.commit();}
-			},
-			function(){return o.vibre ? "Stop !" : "Move !"})),
-		FV.tag("td", {}, FV.tag(
-					"button",
-					{
-						"onclick": function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}
-					},
-					 "Historique")
-		),
+		FV.tag("td",{cursor:"pointer",
+				onclick:function(){o.vibre=!o.vibre; F.objectManager.commit();},
+				color:function(){return o.vibre ? "red" : "lightGreen";}},o.nom),
+		FV.tag("td",{}, FV.tag("div", 
+					{position:"relative", cursor:"pointer", onclick:function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}},
+					[
+						FV_Canvas(o),
+						FV.tag("div",{width :"144px",height :"144px",position:"relative",background:"transparent url(images/tool_320.png) no-repeat",backgroundSize:"100%", backgroundPosition:"50% 50%"})
+					])),
 	]);
 };
 
 table = function(){
-	var ret = [
-		FV.tag("tr",{},[
-			FV.tag("td",{},"nom"),
-			FV.tag("td",{},"alpha"),
-			FV.tag("td",{},"beta"),
-			FV.tag("td",{},"Vibration"),
-			FV.tag("td",{},"")
-		])
-	];
+	var ret = new Array();
 	app.telephones.forEach(function(telephone){
 		ret.push(unTelephone(telephone));
 	});
@@ -145,9 +150,112 @@ table = function(){
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
-		FV.tag("table",{},table)
+		FV.tag("div", {textAlign:"center"}, FV.tag("img", {src:"images/code.png", height:"100px", width:"100px"})),
+		FV.tag("table",{margin:"auto"},table)
 	]
 );
 
 document.body.appendChild(page.domElt);
+
+var TWO_PI = 2 * Math.PI, HALF_PI = Math.PI / 2, KAPPA = 0.5522847498, radius_mul_kappa;
+var GROUND_COLOR = "#72cde4", LINE_COLOR = "#ffffff", SKY_COLOR = "#323232";
+
+draw = function(canvas, context, pitch, roll) {
+
+    aspectRatio = document.body.clientWidth / document.body.clientHeight;
+
+    diameter = Math.min(canvas.width, canvas.height);
+    radius = diameter / 2;
+
+    radius_mul_kappa = radius * KAPPA;
+        
+    // calculate horizon
+    horizon = getHorizon(pitch, radius);
+    
+    // repaint
+    repaint(context, pitch, roll, radius_mul_kappa, horizon, diameter, radius);
+
+};
+
+
+repaint =  function(context, pitch, roll, radius_mul_kappa, horizon, diameter, radius) {
+    context.save();
+    
+    context.translate(radius, radius);
+    context.rotate(roll);
+    
+    context.fillStyle = GROUND_COLOR;
+    context.strokeStyle = LINE_COLOR;
+    context.lineWidth = 3;
+
+    // draw ground
+    context.beginPath();
+    context.arc(0, 0, radius, 0, 2 * Math.PI, false);
+    context.fill();
+    
+    context.fillStyle = SKY_COLOR;
+
+    // draw sky
+    context.beginPath();
+    context.moveTo( -radius, 0);
+    context.arcTo(0, -radius*2, radius, 0, radius);
+    context.bezierCurveTo(radius, horizon * KAPPA, radius_mul_kappa, horizon, 0, horizon);
+    context.bezierCurveTo( -radius_mul_kappa, horizon, -radius, horizon * KAPPA, -radius, 0);
+    context.closePath();
+    context.stroke();
+    context.fill();
+
+    context.lineWidth = 2;
+    
+    // draw scale
+    drawScale(context, 36, radius * 0.8, pitch, radius_mul_kappa, horizon, diameter, radius);
+    drawScale(context, 30, radius * 0.1, pitch, radius_mul_kappa, horizon, diameter, radius);
+    drawScale(context, 24, radius * 0.6, pitch, radius_mul_kappa, horizon, diameter, radius);
+    drawScale(context, 18, radius * 0.1, pitch, radius_mul_kappa, horizon, diameter, radius);
+    drawScale(context, 12, radius * 0.4, pitch, radius_mul_kappa, horizon, diameter, radius);
+    drawScale(context, 6, radius * 0.1, pitch, radius_mul_kappa, horizon, diameter, radius);
+
+    context.restore();
+
+};
+
+drawScale =  function(context, offset, scaleWidth, pitch, radius_mul_kappa, horizon, diameter, radius) {
+
+    context.save();
+
+    context.beginPath();
+    context.rect( -scaleWidth / 2, -diameter, scaleWidth, 2 * diameter);
+    context.clip();
+
+    horizon = getHorizon(pitch + offset * Math.PI / 180);
+    context.beginPath();
+    context.moveTo(radius, 0);
+    context.bezierCurveTo(radius, horizon * KAPPA, radius_mul_kappa, horizon, 0, horizon);
+    context.bezierCurveTo( -radius_mul_kappa, horizon, -radius, horizon * KAPPA, -radius, 0);
+    context.stroke();
+
+    horizon = getHorizon(pitch -offset * Math.PI / 180);
+    context.beginPath();
+    context.moveTo(radius, 0);
+    context.bezierCurveTo(radius, horizon * KAPPA, radius_mul_kappa, horizon, 0, horizon);
+    context.bezierCurveTo( -radius_mul_kappa, horizon, -radius, horizon * KAPPA, -radius, 0);
+    context.stroke();
+    
+    context.restore();
+
+};
+
+arrondir = function(double){
+	return Math.round(double*100)/100;
+}
+
+
+
+getHorizon = function(pitch, radius) {
+
+    return Math.sin(pitch) * radius;
+
+};
+
+
 </script>

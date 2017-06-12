@@ -2,6 +2,11 @@ body {
 	font-family:helvetica,arial,verdana,sans-serif;
 	font-size:16px;
 	margin:0;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	background: transparent url(images/bg.jpg) no-repeat scroll 50%;
+	background-size: 100% 100%;
 }
 /*button {
 	background:#add2ed;

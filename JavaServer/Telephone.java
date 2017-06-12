@@ -1,6 +1,5 @@
 package JavaServer;
 import java.util.*;
-
 import fors.objectsManagement.*;
 /*BEGIN_USERHEADER*/
 import java.util.concurrent.TimeUnit;
@@ -150,20 +149,20 @@ public class Telephone implements ManagedObject
 
 	public Collection<Historique> getHistoriques() {
 		Set<Historique> vals = (Set<Historique>)_om.getTransaction().getValues(getId(),"historiques",(Set<Historique>)__getShared("historiques"));
-		if (vals != null) {
-			ArrayList<Historique> list = new ArrayList<Historique>(vals);
-			Collections.sort(list, new Comparator<Historique>() {
-				public int compare(Historique a,Historique b) {
-					if( a == null && b ==null) return 0;
-					if( a == null) return -1;
-					if( b == null) return +1;
-					Date da = a.getTimestamp();
-					Date db = b.getTimestamp();
-					return da.compareTo(db);
-				}
-			});
-			return Collections.unmodifiableList(list);
-		}
+			if (vals != null) {
+				ArrayList<Historique> list = new ArrayList<Historique>(vals);
+				Collections.sort(list, new Comparator<Historique>() {
+					public int compare(Historique a,Historique b) {
+						if( a == null && b ==null) return 0;
+						if( a == null) return -1;
+						if( b == null) return +1;
+						Date da = a.getTimestamp();
+						Date db = b.getTimestamp();
+						return da.compareTo(db);
+					}
+				});
+				return Collections.unmodifiableList(list);
+			}
 		return vals;
 	}
 	public void addToHistoriques(ManagedObject obj) throws Exception {
@@ -188,7 +187,7 @@ public class Telephone implements ManagedObject
 		this.setVibre(vibre);
 		this.setAlpha(alpha);
 		this.setBeta(beta);
-		trigger = new TriggerChange();
+		trigger = new TriggerChange("telephone");
 		trigger.execute();
 	}
 
@@ -196,6 +195,10 @@ public class Telephone implements ManagedObject
 
 	public class TriggerChange extends DataChangeObserver{
 
+
+		public TriggerChange(String name) {
+			super(name);
+		}
 
 		private long pasArchive = TimeUnit.MILLISECONDS.toMillis(500);
 		private long tempsArchive = TimeUnit.MINUTES.toMillis(4);
