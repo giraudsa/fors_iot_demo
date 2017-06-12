@@ -112,7 +112,7 @@ FV_Canvas = function(o){
 				marginLeft: "auto",
 				marginRight: "auto",
 				display: "block",
-				position:"fixed",
+				position:"absolute",
 				width:"130px",
 				height:"130px",
 				});
@@ -127,20 +127,22 @@ FV_Canvas = function(o){
 
 
 unTelephone = function(o){
-	return FV.tag("tr",{},[
-		FV.tag("td",{cursor:"pointer",
+	return FV.tag("table",{float:"left", border:"2px solid black"},[
+		FV.tag("tr",{}, FV.tag("td",{cursor:"pointer",
+				textAlign:"center",
+				size:"20",
 				onclick:function(){o.vibre=!o.vibre; F.objectManager.commit();},
-				color:function(){return o.vibre ? "red" : "lightGreen";}},o.nom),
-		FV.tag("td",{}, FV.tag("div", 
+				color:function(){return o.vibre ? "red" : "lightGreen";}},o.nom)),
+		FV.tag("tr",{}, FV.tag("td",{}, FV.tag("div", 
 					{position:"relative", cursor:"pointer", onclick:function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}},
 					[
 						FV_Canvas(o),
 						FV.tag("div",{width :"288px",height :"288px",position:"relative",background:"transparent url(images/tool_320.png) no-repeat",backgroundSize:"100%", backgroundPosition:"50% 50%"})
-					])),
+					]))),
 	]);
 };
 
-table = function(){
+tables = function(){
 	var ret = new Array();
 	app.telephones.forEach(function(telephone){
 		ret.push(unTelephone(telephone));
@@ -152,7 +154,7 @@ table = function(){
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
 		FV.tag("div", {textAlign:"center"}, FV.tag("img", {src:"images/code.png", height:"100px", width:"100px"})),
-		FV.tag("table",{margin:"auto"},table)
+		FV.tag("table",{margin:"auto"},tables)
 	]
 );
 
