@@ -52,32 +52,34 @@ header = function() {
 	])
 };
 
+fenetreHistorique = function(){	
+	var histo = FV.tag("div",{margin:"0 auto",width:"600px"});
 
-var histo = FV.tag("div",{margin:"0 auto",width:"600px"});
+	google.charts.setOnLoadCallback(function(){
+		var options = {
+		  title: 'historique',
+		  curveType: 'function',
+		  height:600,
+		  width:600,
+		  explorer:{},
+		  animation:{
+		    duration: 1000,
+		    easing: 'out',
+		  },
+		  legend: { position: 'bottom' }
+		};
 
-google.charts.setOnLoadCallback(function(){
-	var options = {
-	  title: 'historique',
-	  curveType: 'function',
-	  height:600,
-	  width:600,
-	  explorer:{},
-	  animation:{
-	    duration: 1000,
-	    easing: 'out',
-	  },
-	  legend: { position: 'bottom' }
-	};
+		var chart = new google.visualization.LineChart(histo.domElt);
 
-	var chart = new google.visualization.LineChart(histo.domElt);
-
-	F.defineTrigger(function(){
-		if(app.currentTelephone != null && app.currentTelephone.historiques != null){
-			var data = dataHistorique(app.currentTelephone.historiques);
-			chart.draw(data, options);
-		}
+		F.defineTrigger(function(){
+			if(app.currentTelephone != null && app.currentTelephone.historiques != null){
+				var data = dataHistorique(app.currentTelephone.historiques);
+				chart.draw(data, options);
+			}	
+		});
 	});
-});
+	return histo;
+};
 
 dataHistorique = function(historiques){
 	var data = new google.visualization.DataTable();
@@ -132,7 +134,7 @@ unTelephone = function(o){
 				onclick:function(){o.vibre=!o.vibre; F.objectManager.commit();},
 				color:function(){return o.vibre ? "red" : "lightGreen";}},o.nom)),
 		FV.tag("tr",{}, FV.tag("td",{}, FV.tag("div", 
-					{position:"relative", cursor:"pointer", onclick:function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:function(){return "history of " + o.nom}}, histo);}},
+					{position:"relative", cursor:"pointer", onclick:function(){app.currentTelephone = o; FV.popupWindow({onClose:function(){app.currentTelephone = null}, title:function(){return "history of " + o.nom}}, fenetreHistorique);}},
 					[
 						FV_Canvas(o),
 						FV.tag("div",{width :"288px",height :"288px",position:"relative",background:"transparent url(images/tool_320.png) no-repeat",backgroundSize:"100%", backgroundPosition:"50% 50%"})
