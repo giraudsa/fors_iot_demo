@@ -87,7 +87,7 @@ dataHistorique = function(historiques){
         if(historiques != null){
                 historiques.forEach(function(historique){
                         var lh = ligneData(historique);
-                        if(lh) data.push(lh);
+                        if(lh) data.addRow(lh);
                 });
         }
 	return data;
@@ -96,7 +96,7 @@ dataHistorique = function(historiques){
 ligneData = function(historique){
         if(historique != null && historique.timestamp != null && historique.alpha!= null && historique.beta != null){
 		try{
-			return [historique.timestamp, historique.alpha, historique.beta];
+			return [historique.timestamp.getTime(), historique.alpha, historique.beta];
 		}catch(e){
 			return null;
 		}
