@@ -206,6 +206,7 @@ public class Telephone implements ManagedObject
 		@Override
 		public Object doTheJob(boolean isFirstCall) throws Exception {
 			synchronized(synchro) {
+				Log.debug("on rentre dans un datachange history sur telephone " + getNom());
 				ArrayList<DataChangeObserver> toObserve = getterToObserve();
 				Date now = new Date();
 				if(now.getTime() - lastChange.getTime() > pasArchive) {
@@ -227,13 +228,14 @@ public class Telephone implements ManagedObject
 		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
 			for(Historique histo : getHistoriques()) {
 				if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
-					System.out.println("on supprime un historique trop vieux");
+					Log.debug("on supprime un historique trop vieux");
 					histo.delete();
 				}else return;
 			}
 		}
 
 		private Historique newHistorique(Date date) throws Exception {
+			Log.debug("nouvel historique pour le téléphone " + getNom());
 			Historique historique = new Historique();
 			historique.setAlpha(getAlpha() == null ? 0.0 : getAlpha());
 			historique.setBeta(getBeta() == null ? 0.0 : getBeta());
