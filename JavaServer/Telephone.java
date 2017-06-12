@@ -234,6 +234,7 @@ public class Telephone implements ManagedObject
 		}
 
 		private void purgeHistoriqueDesVieuxEnregistrements(Date now) {
+			Log.debug("suppression des vieux historiques de " + getNom());
 			for(Historique histo : getHistoriques()) {
 				if(now.getTime() - histo.getTimestamp().getTime() > tempsArchive) {
 					Log.debug("on supprime un historique trop vieux");
