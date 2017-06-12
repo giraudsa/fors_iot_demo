@@ -119,7 +119,7 @@ page =  FV.tag("div",{},[
 document.body.appendChild(page.domElt);
 
 commitSiNecessaire = function(pitch, roll){
-	if(!app.isCommiting && Date.now() - app.lastCommit > 1000 && (app.telephone.alpha != roll || app.telephone.beta != pitch)){
+	if(!app.isCommiting && Date.now() - app.lastCommit > 10 && (app.telephone.alpha != roll || app.telephone.beta != pitch)){
 		app.isCommiting = true;
 		app.telephone.alpha = roll;
 		app.telephone.beta = pitch;	
