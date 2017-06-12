@@ -52,6 +52,8 @@ header = function() {
 	])
 };
 
+F.defineProperty("Application", "historiques");
+
 fenetreHistorique = function(){	
 	var histo = FV.tag("div",{margin:"0 auto",width:"600px"});
 
@@ -69,10 +71,12 @@ fenetreHistorique = function(){
 		  legend: { position: 'bottom' }
 		};
 
+		if(app.currentTelephone != null) app.historiques = app.currentTelephone.historiques;
+
 		var chart = new google.visualization.LineChart(histo.domElt);
 
 		F.defineTrigger(function(){
-			if(app.currentTelephone != null && app.currentTelephone.historiques != null){
+			if(app.historiques != null){
 				var data = dataHistorique(app.currentTelephone.historiques);
 				chart.draw(data, options);
 			}	
