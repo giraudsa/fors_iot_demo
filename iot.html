@@ -106,18 +106,18 @@ ligneData = function(historique){
 
 FV_Canvas = function(o){
 	ret = FV.tag("canvas", {
-				paddingLeft: "45px",
-				paddingTop: "41px",
+				paddingLeft: "80px",
+				paddingTop: "77px",
 				marginLeft: "auto",
 				marginRight: "auto",
 				display: "block",
 				position:"fixed",
-				width:"54px",
-				height:"54px",
+				width:"130px",
+				height:"130px",
 				});
 	var canvas = ret.domElt;
-	canvas.width = 54;
-	canvas.height = 54;
+	canvas.width = 130;
+	canvas.height = 130;
 	var context = canvas.getContext("2d");
 	
 	F.defineTrigger(function(){draw(canvas, context, o.beta, o.alpha)});
@@ -134,7 +134,7 @@ unTelephone = function(o){
 					{position:"relative", cursor:"pointer", onclick:function(){app.currentHistoriques = o.historiques; app.currentTelephone = o; FV.popupWindow({title:"Historique"}, histo);}},
 					[
 						FV_Canvas(o),
-						FV.tag("div",{width :"144px",height :"144px",position:"relative",background:"transparent url(images/tool_320.png) no-repeat",backgroundSize:"100%", backgroundPosition:"50% 50%"})
+						FV.tag("div",{width :"288px",height :"288px",position:"relative",background:"transparent url(images/tool_320.png) no-repeat",backgroundSize:"100%", backgroundPosition:"50% 50%"})
 					])),
 	]);
 };
