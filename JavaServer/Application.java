@@ -1,7 +1,5 @@
 package JavaServer;
 import java.util.*;
-
-import JavaServer.Telephone.TriggerChange;
 import fors.objectsManagement.*;
 /*BEGIN_USERHEADER*/
 /*END_USERHEADER*/

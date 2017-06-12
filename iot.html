@@ -48,7 +48,7 @@ F.startAutoUpdate();
 
 header = function() {
 	return  FV.tag("div",{},[
-			FV.tag("h2",{width:"auto",textAlign:"center"},"IOT Simulator "),
+			FV.tag("h2",{color:"white", width:"auto",textAlign:"center"},"IOT Simulator "),
 	])
 };
 
@@ -131,11 +131,22 @@ FV_Canvas = function(o){
 
 
 unTelephone = function(o){
+	var timer;
 	return FV.tag("table",{float:"left", border:"2px solid black"},[
 		FV.tag("tr",{}, FV.tag("td",{cursor:"pointer",
 				textAlign:"center",
 				size:"20",
-				onclick:function(){o.vibre=!o.vibre; F.objectManager.commit();},
+				onclick:function(){
+					if(timer) clearTimeout(timer);
+					timer = setTimeout(function(){o.vibre=!o.vibre; F.objectManager.commit();}, 150)
+					},
+				ondblclick:function(){
+					if(timer) clearTimeout(timer);
+					if(confirm("Ok to delete ?")){
+						o.delete();
+						F.objectManager.commit();
+					}
+				},
 				color:function(){return o.vibre ? "red" : "lightGreen";}},o.nom)),
 		FV.tag("tr",{}, FV.tag("td",{}, FV.tag("div", 
 					{position:"relative", cursor:"pointer", onclick:function(){app.currentTelephone = o; FV.popupWindow({onClose:function(){app.currentTelephone = null}, title:function(){return "history of " + o.nom}}, fenetreHistorique);}},
@@ -157,7 +168,7 @@ tables = function(){
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
-		FV.tag("table", {margin: "0 auto",width:"auto", textAlign:"center"}, [FV.tag("tr", {}, FV.tag("td", {}, FV.tag("img", {src:"images/code.png", height:"100px", width:"100px"}))), FV.tag("tr", {}, FV.tag("td", {},"https://goo.gl/97nHCX"))]),
+		FV.tag("table", {margin: "0 auto",width:"auto", textAlign:"center"}, [FV.tag("tr", {}, FV.tag("td", {}, FV.tag("img", {src:"images/code.png", height:"100px", width:"100px"}))), FV.tag("tr", {}, FV.tag("td", {color:"white"},"https://goo.gl/97nHCX"))]),
 		FV.tag("table",{margin:"auto"},tables)
 	]
 );
