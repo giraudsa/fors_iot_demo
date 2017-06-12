@@ -53,8 +53,6 @@ header = function() {
 };
 
 
-F.defineProperty("Application", "currentHistoriques");
-
 var histo = FV.tag("div",{margin:"0 auto",width:"600px"});
 
 google.charts.setOnLoadCallback(function(){
@@ -74,8 +72,8 @@ google.charts.setOnLoadCallback(function(){
 	var chart = new google.visualization.LineChart(histo.domElt);
 
 	F.defineTrigger(function(){
-		if(app.currentHistoriques != null){
-			var data = dataHistorique(app.currentHistoriques);
+		if(app.currentTelephone != null && app.currentTelephone.historiques != null){
+			var data = dataHistorique(app.currentTelephone.historiques);
 			chart.draw(data, options);
 		}
 	});
@@ -153,7 +151,7 @@ tables = function(){
 
 page =  FV.tag("div",{},[
 		FV.tag("div",{},header()),
-		FV.tag("div", {textAlign:"center"}, FV.tag("img", {src:"images/code.png", height:"100px", width:"100px"})),
+		FV.tag("table", {width:"auto", textAlign:"center"}, [FV.tag("tr", {}, FV.tag("td", {}, FV.tag("img", {src:"images/code.png", height:"100px", width:"100px"}))), FV.tag("tr", {}, FV.tag("td", {},"https://goo.gl/97nHCX"))]),
 		FV.tag("table",{margin:"auto"},tables)
 	]
 );
