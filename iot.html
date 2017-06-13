@@ -138,7 +138,7 @@ unTelephone = function(o){
 				size:"20",
 				onclick:function(){
 					if(timer) clearTimeout(timer);
-					timer = setTimeout(function(){o.vibre=!o.vibre; F.objectManager.commit();}, 150)
+					else timer = setTimeout(function(){o.vibre=!o.vibre; F.objectManager.commit();}, 150)
 					},
 				ondblclick:function(){
 					if(timer) clearTimeout(timer);
