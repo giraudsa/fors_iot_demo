@@ -137,11 +137,11 @@ unTelephone = function(o){
 				textAlign:"center",
 				size:"20",
 				onclick:function(){
-					if(timer) clearTimeout(timer);
-					else timer = setTimeout(function(){o.vibre=!o.vibre; F.objectManager.commit();}, 150)
+					if(timer) {clearTimeout(timer); timer = 0;}
+					else timer = setTimeout(function(){o.vibre=!o.vibre; F.objectManager.commit(); timer = 0;}, 150)
 					},
 				ondblclick:function(){
-					if(timer) clearTimeout(timer);
+					if(timer) {clearTimeout(timer); timer = 0;}
 					if(confirm("Ok to delete ?")){
 						o.delete();
 						F.objectManager.commit();
